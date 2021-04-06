@@ -2,7 +2,7 @@ package com.auction.eni_auction.bo;
 
 import java.util.Date;
 
-public class ArticleVendu {
+public class ArticlesVendus {
 
     private int noArticle;
 
