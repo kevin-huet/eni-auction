@@ -122,12 +122,12 @@ public class Utilisateur {
 		this.administrateur = administrateur;
 	}
 	
-	public void addCredit(Enchere enchere) {
+	public void addCredit(Encheres enchere) {
 		int credit = getCredit() + enchere.getMontantEnchere();
 		setCredit(credit);
 	}
 	
-	public void removeCredit(Enchere enchere) {
+	public void removeCredit(Encheres enchere) {
 		int credit = getCredit() - enchere.getMontantEnchere();
 		setCredit(credit);
 	}

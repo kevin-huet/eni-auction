@@ -4,35 +4,35 @@ import java.util.Date;
 
 public class Encheres {
 
-    public Encheres(int _noUtilisateur, int _noArticle, int _montantEnchere) {
-        noArticle = _noArticle;
-        noUtilisateur = _noUtilisateur;
+    public Encheres(Utilisateur utilisateur, ArticlesVendus article, int _montantEnchere) {
+        this.article = article;
+        this.utilisateur = utilisateur;
         montantEnchere = _montantEnchere;
         dateEnchere =  new Date();
     }
 
-    private int noUtilisateur;
+    private Utilisateur utilisateur;
 
-    private int noArticle;
+    private ArticlesVendus article;
 
     private Date dateEnchere;
 
     private int montantEnchere;
 
-    public int getNoUtilisateur() {
-        return noUtilisateur;
+    public Utilisateur getutilisateur() {
+        return utilisateur;
     }
 
-    public void setNoUtilisateur(int noUtilisateur) {
-        this.noUtilisateur = noUtilisateur;
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
     }
 
-    public int getNoArticle() {
-        return noArticle;
+    public ArticlesVendus getArticle() {
+        return article;
     }
 
-    public void setNoArticle(int noArticle) {
-        this.noArticle = noArticle;
+    public void setArticle(ArticlesVendus article) {
+        this.article = article;
     }
 
     public Date getDateEnchere() {

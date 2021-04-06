@@ -18,11 +18,44 @@ public class ArticlesVendus {
 
     private int sellPrice;
 
-    private int noUtilisateur;
+    private Utilisateur utilisateur;
 
-    private int noCategorie;
+    private Categorie categorie;
+    
+    
 
-    public int getNoArticle() {
+    public ArticlesVendus(int noArticle, String nom, String description, Date beginAuction, Date endAuction,
+			int initialPrice, int sellPrice, Utilisateur utilisateur, Categorie categorie) {
+		super();
+		this.noArticle = noArticle;
+		this.nom = nom;
+		this.description = description;
+		this.beginAuction = beginAuction;
+		this.endAuction = endAuction;
+		this.initialPrice = initialPrice;
+		this.sellPrice = sellPrice;
+		this.utilisateur = utilisateur;
+		this.categorie = categorie;
+	}
+    
+   
+
+	public ArticlesVendus(String nom, String description, Date beginAuction, Date endAuction, int initialPrice,
+			int sellPrice, Utilisateur utilisateur, Categorie categorie) {
+		super();
+		this.nom = nom;
+		this.description = description;
+		this.beginAuction = beginAuction;
+		this.endAuction = endAuction;
+		this.initialPrice = initialPrice;
+		this.sellPrice = sellPrice;
+		this.utilisateur = utilisateur;
+		this.categorie = categorie;
+	}
+
+
+
+	public int getNoArticle() {
         return noArticle;
     }
 
@@ -78,19 +111,19 @@ public class ArticlesVendus {
         this.sellPrice = sellPrice;
     }
 
-    public int getNoUtilisateur() {
-        return noUtilisateur;
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
     }
 
-    public void setNoUtilisateur(int noUtilisateur) {
-        this.noUtilisateur = noUtilisateur;
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
     }
 
-    public int getNoCategorie() {
-        return noCategorie;
+    public Categorie getCategorie() {
+        return categorie;
     }
 
-    public void setNoCategorie(int noCategorie) {
-        this.noCategorie = noCategorie;
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
     }
 }

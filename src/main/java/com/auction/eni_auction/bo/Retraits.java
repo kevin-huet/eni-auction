@@ -2,7 +2,7 @@ package com.auction.eni_auction.bo;
 
 public class Retraits {
 
-    private int noArticle;
+    private ArticlesVendus article;
 
     private String rue;
 
@@ -10,12 +10,12 @@ public class Retraits {
 
     private String city;
 
-    public int getNoArticle() {
-        return noArticle;
+    public ArticlesVendus getArticle() {
+        return article;
     }
 
-    public void setNoArticle(int noArticle) {
-        this.noArticle = noArticle;
+    public void setArticle(ArticlesVendus article) {
+        this.article = article;
     }
 
     public String getRue() {
