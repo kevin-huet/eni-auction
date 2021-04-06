@@ -53,7 +53,34 @@ public class UtilisateurJdbc implements UtilisateurDAO {
 
     @Override
     public Utilisateur selectById(int id) throws DALException {
-        return null;
+    	Utilisateur utilisateur = null;
+    	try (Connection cnx = ConnectionProvider.getConnection()) {
+        	PreparedStatement pStmt = cnx.prepareStatement(SELECT_ID);
+        	pStmt.setInt(1, id);
+        	ResultSet rs = pStmt.executeQuery();
+        	
+        	while (rs.next()) {
+        		utilisateur = new Utilisateur(
+        				rs.getInt("no_utilisateur"),
+        				rs.getString("pseudo"),
+        				rs.getString("nom"),
+        				rs.getString("prenom"),
+        				rs.getString("email"),
+        				rs.getString("telephone"),
+        				rs.getString("rue"),
+        				rs.getString("code_postal"),
+        				rs.getString("ville"),
+        				rs.getString("mot_de_passe"),
+        				rs.getInt("credit"),
+        				rs.getBoolean("administrateur")
+        			);
+        	}
+        } catch (SQLException e) {
+        	DALException exception = new DALException();
+			exception.addError(e.getErrorCode());
+			throw exception;
+		}
+		return utilisateur;
     }
 
     @Override
