@@ -17,7 +17,7 @@ public class UtilisateurJdbc implements UtilisateurDAO {
 	
 	private static final String SELECT_ALL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS";
 	private static final String SELECT_ID = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE no_utilisateur = ?";
-	private static final String SELECT_CREDENTIALS = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE pseudo = ? AND mot_de_passe = ? LIMIT 1";
+	private static final String SELECT_CREDENTIALS = "SELECT TOP 1 no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE pseudo = ? AND mot_de_passe = ?";
 	private static final String INSERT_ONE = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String UPDATE_ONE = "UPDATE UTILISATEURS SET pseudo = ?, nom = ?, prenom = ?, email = ?, telephone = ?, rue = ?, code_postal = ?, ville = ?, mot_de_passe = ?, administrateur = ?  WHERE no_utilisateur = ?";
     private static final String DELETE_ONE = "DELETE FROM UTILISATEURS WHERE no_utilisateur = ?";
@@ -48,6 +48,8 @@ public class UtilisateurJdbc implements UtilisateurDAO {
 			DALException exception = new DALException();
 			exception.addError(e.getErrorCode());
 			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return var;
     }
@@ -80,6 +82,8 @@ public class UtilisateurJdbc implements UtilisateurDAO {
         	DALException exception = new DALException();
 			exception.addError(e.getErrorCode());
 			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return utilisateur;
     }
@@ -112,6 +116,8 @@ public class UtilisateurJdbc implements UtilisateurDAO {
         	DALException exception = new DALException();
 			exception.addError(e.getErrorCode());
 			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
         return utilisateurs;
     }
@@ -137,6 +143,8 @@ public class UtilisateurJdbc implements UtilisateurDAO {
     		DALException exception = new DALException();
 			exception.addError(e.getErrorCode());
 			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
     }
 
@@ -151,6 +159,8 @@ public class UtilisateurJdbc implements UtilisateurDAO {
     		DALException exception = new DALException();
 			exception.addError(e.getErrorCode());
 			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
     }
 
@@ -198,6 +208,8 @@ public class UtilisateurJdbc implements UtilisateurDAO {
         	DALException exception = new DALException();
 			exception.addError(e.getErrorCode());
 			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return utilisateur;
     }
@@ -219,6 +231,8 @@ public class UtilisateurJdbc implements UtilisateurDAO {
     		DALException exception = new DALException();
 			exception.addError(e.getErrorCode());
 			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
     }
