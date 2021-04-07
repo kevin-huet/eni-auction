@@ -149,10 +149,10 @@ public class UtilisateurJdbc implements UtilisateurDAO {
     }
 
     @Override
-    public void delete(Utilisateur var) throws DALException {
+    public void delete(int id) throws DALException {
     	try (Connection cnx = ConnectionProvider.getConnection()) {
     		PreparedStatement pStmt = cnx.prepareStatement(DELETE_ONE);
-    		pStmt.setInt(1, var.getNoUtilisateur());
+    		pStmt.setInt(1, id);
     		
 			pStmt.executeQuery();
     	} catch (SQLException e) {

@@ -270,7 +270,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 	}
 
 	@Override
-	public void delete(ArticlesVendus var) throws DALException {
+	public void delete(int id) throws DALException {
 		// TODO Auto-generated method stub
 		
 	}

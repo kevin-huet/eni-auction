@@ -36,7 +36,7 @@ public class EnchereJdbc implements EnchereDAO {
     }
 
     @Override
-    public void delete(Encheres var) throws DALException {
+    public void delete(int id) throws DALException {
 
     }
 
