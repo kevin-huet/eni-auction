@@ -1,21 +1,30 @@
 package com.auction.eni_auction.bo;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Encheres {
 
-    public Encheres(Utilisateur utilisateur, ArticlesVendus article, int _montantEnchere) {
+    public Encheres(Utilisateur utilisateur, ArticlesVendus article, int montantEnchere) {
         this.article = article;
         this.utilisateur = utilisateur;
-        montantEnchere = _montantEnchere;
-        dateEnchere =  new Date();
+        this.montantEnchere = montantEnchere;
+        dateEnchere =  LocalDateTime.now();
+    }
+    
+    public Encheres(ArticlesVendus article, Utilisateur utilisateur, int montantEnchere, LocalDateTime dateEnchere) {
+        this.article = article;
+        this.utilisateur = utilisateur;
+        this.montantEnchere = montantEnchere;
+        this.dateEnchere =  dateEnchere;
     }
 
     private Utilisateur utilisateur;
 
     private ArticlesVendus article;
 
-    private Date dateEnchere;
+    private LocalDateTime dateEnchere;
 
     private int montantEnchere;
 
@@ -35,11 +44,11 @@ public class Encheres {
         this.article = article;
     }
 
-    public Date getDateEnchere() {
+    public LocalDateTime getDateEnchere() {
         return dateEnchere;
     }
 
-    public void setDateEnchere(Date dateEnchere) {
+    public void setDateEnchere(LocalDateTime dateEnchere) {
         this.dateEnchere = dateEnchere;
     }
 

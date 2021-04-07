@@ -12,9 +12,9 @@ public interface UtilisateurDAO extends DAO<Utilisateur> {
 
     boolean checkForUniqueMail(String mail) throws DALException;
 
-    Utilisateur selectUtilisateurByPseudo(String pseudo) throws DALException;
+    Utilisateur selectUtilisateurByCredentials(String pseudo, String password) throws DALException;
 
     HashMap<Integer, String> selectUtilisateursWithCurrentAuction() throws DALException;
 
-    Utilisateur updateCredit(int noUtilisateur, int newCredit) throws DALException;
+    void updateCredit(Utilisateur utilisateur, int newCredit) throws DALException;
 }

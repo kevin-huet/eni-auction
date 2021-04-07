@@ -1,5 +1,6 @@
 package com.auction.eni_auction.bo;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class ArticlesVendus {
@@ -10,9 +11,9 @@ public class ArticlesVendus {
 
     private String description;
 
-    private Date beginAuction;
+    private LocalDate beginAuction;
 
-    private Date endAuction;
+    private LocalDate endAuction;
 
     private int initialPrice;
 
@@ -22,9 +23,11 @@ public class ArticlesVendus {
 
     private Categorie categorie;
     
+    private Encheres enchere;
     
+    private Retraits retrait;
 
-    public ArticlesVendus(int noArticle, String nom, String description, Date beginAuction, Date endAuction,
+    public ArticlesVendus(int noArticFle, String nom, String description, LocalDate beginAuction, LocalDate endAuction,
 			int initialPrice, int sellPrice, Utilisateur utilisateur, Categorie categorie) {
 		super();
 		this.noArticle = noArticle;
@@ -40,7 +43,7 @@ public class ArticlesVendus {
     
    
 
-	public ArticlesVendus(String nom, String description, Date beginAuction, Date endAuction, int initialPrice,
+	public ArticlesVendus(String nom, String description, LocalDate beginAuction, LocalDate endAuction, int initialPrice,
 			int sellPrice, Utilisateur utilisateur, Categorie categorie) {
 		super();
 		this.nom = nom;
@@ -79,19 +82,19 @@ public class ArticlesVendus {
         this.description = description;
     }
 
-    public Date getBeginAuction() {
+    public LocalDate getBeginAuction() {
         return beginAuction;
     }
 
-    public void setBeginAuction(Date beginAuction) {
+    public void setBeginAuction(LocalDate beginAuction) {
         this.beginAuction = beginAuction;
     }
 
-    public Date getEndAuction() {
+    public LocalDate getEndAuction() {
         return endAuction;
     }
 
-    public void setEndAuction(Date endAuction) {
+    public void setEndAuction(LocalDate endAuction) {
         this.endAuction = endAuction;
     }
 
@@ -126,4 +129,28 @@ public class ArticlesVendus {
     public void setCategorie(Categorie categorie) {
         this.categorie = categorie;
     }
+
+
+
+	public Encheres getEnchere() {
+		return enchere;
+	}
+
+
+
+	public void setEnchere(Encheres enchere) {
+		this.enchere = enchere;
+	}
+
+
+
+	public Retraits getRetrait() {
+		return retrait;
+	}
+
+
+
+	public void setRetrait(Retraits retrait) {
+		this.retrait = retrait;
+	}
 }

@@ -15,7 +15,8 @@ import java.util.List;
 public class EnchereJdbc implements EnchereDAO {
 
     @Override
-    public void insert(Encheres var) throws DALException, SQLException {
+    public Encheres insert(Encheres var) throws DALException, SQLException {
+		return var;
         
     }
 
