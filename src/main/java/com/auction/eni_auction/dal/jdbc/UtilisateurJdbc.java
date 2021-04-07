@@ -17,6 +17,7 @@ public class UtilisateurJdbc implements UtilisateurDAO {
 	
 	private static final String SELECT_ALL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS";
 	private static final String SELECT_ID = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE no_utilisateur = ?";
+	private static final String SELECT_CREDENTIALS = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE pseudo = ? AND mot_de_passe = ? LIMIT 1";
 	private static final String INSERT_ONE = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String UPDATE_ONE = "UPDATE UTILISATEURS SET pseudo = ?, nom = ?, prenom = ?, email = ?, telephone = ?, rue = ?, code_postal = ?, ville = ?, mot_de_passe = ?, administrateur = ?  WHERE no_utilisateur = ?";
     private static final String DELETE_ONE = "DELETE FROM UTILISATEURS WHERE no_utilisateur = ?";
@@ -169,8 +170,36 @@ public class UtilisateurJdbc implements UtilisateurDAO {
     }
 
     @Override
-    public Utilisateur selectUtilisateurByPseudo(String pseudo) throws DALException {
-        return null;
+    public Utilisateur selectUtilisateurByCredentials(String pseudo, String password) throws DALException {
+    	Utilisateur utilisateur = null;
+    	try (Connection cnx = ConnectionProvider.getConnection()) {
+        	PreparedStatement pStmt = cnx.prepareStatement(SELECT_CREDENTIALS);
+        	pStmt.setString(1, pseudo);
+        	pStmt.setString(2, password);
+        	ResultSet rs = pStmt.executeQuery();
+        	
+        	while (rs.next()) {
+        		utilisateur = new Utilisateur(
+        				rs.getInt("no_utilisateur"),
+        				rs.getString("pseudo"),
+        				rs.getString("nom"),
+        				rs.getString("prenom"),
+        				rs.getString("email"),
+        				rs.getString("telephone"),
+        				rs.getString("rue"),
+        				rs.getString("code_postal"),
+        				rs.getString("ville"),
+        				rs.getString("mot_de_passe"),
+        				rs.getInt("credit"),
+        				rs.getBoolean("administrateur")
+        			);
+        	}
+        } catch (SQLException e) {
+        	DALException exception = new DALException();
+			exception.addError(e.getErrorCode());
+			throw exception;
+		}
+		return utilisateur;
     }
 
     @Override
