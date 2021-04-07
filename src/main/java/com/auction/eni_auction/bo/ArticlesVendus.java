@@ -23,7 +23,9 @@ public class ArticlesVendus {
 
     private Categorie categorie;
     
+    private Encheres enchere;
     
+    private Retraits retrait;
 
     public ArticlesVendus(int noArticFle, String nom, String description, LocalDate beginAuction, LocalDate endAuction,
 			int initialPrice, int sellPrice, Utilisateur utilisateur, Categorie categorie) {
@@ -127,4 +129,28 @@ public class ArticlesVendus {
     public void setCategorie(Categorie categorie) {
         this.categorie = categorie;
     }
+
+
+
+	public Encheres getEnchere() {
+		return enchere;
+	}
+
+
+
+	public void setEnchere(Encheres enchere) {
+		this.enchere = enchere;
+	}
+
+
+
+	public Retraits getRetrait() {
+		return retrait;
+	}
+
+
+
+	public void setRetrait(Retraits retrait) {
+		this.retrait = retrait;
+	}
 }

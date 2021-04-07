@@ -10,7 +10,15 @@ public class Retraits {
 
     private String city;
 
-    public ArticlesVendus getArticle() {
+    public Retraits(ArticlesVendus article, String rue, String postalCode, String city) {
+		super();
+		this.article = article;
+		this.rue = rue;
+		this.postalCode = postalCode;
+		this.city = city;
+	}
+
+	public ArticlesVendus getArticle() {
         return article;
     }
 
