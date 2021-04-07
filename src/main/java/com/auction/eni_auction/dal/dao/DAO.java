@@ -10,5 +10,5 @@ public interface DAO<T> {
     T selectById(int id) throws DALException;
     List<T> selectAll() throws DALException;
     void update(T var) throws DALException;
-    void delete(T var) throws DALException;
+    void delete(int id) throws DALException;
 }
