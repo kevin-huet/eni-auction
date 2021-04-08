@@ -26,8 +26,15 @@ public class HomeServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         ArticleVenduJdbc articleJdbc = new ArticleVenduJdbc();
         List<ArticlesVendus> listArticles = new ArrayList<ArticlesVendus>();
+        UtilisateurJdbc utilisateurJdbc = new UtilisateurJdbc();
+        Utilisateur user = null;
         try {
-            listArticles.add(articleJdbc.selectById(1));
+            user = utilisateurJdbc.selectById(1);
+        } catch (DALException e) {
+            e.printStackTrace();
+        }
+        try {
+            listArticles = articleJdbc.filterSell("", 0, "ouvert", user);
         } catch (DALException e) {
             e.printStackTrace();
         }

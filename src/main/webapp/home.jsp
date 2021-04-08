@@ -40,10 +40,10 @@
                 <div class="card">
                     <div class="card-image">
                         <img src="https://i.pinimg.com/originals/c0/83/7a/c0837a3f2855c632be8dbde4b7eeccba.jpg">
-                        <span class="card-title">test</span>
+                        <span class="card-title">${articlesVendus.getNom()}</span>
                     </div>
                     <div class="card-content">
-                        <p>test</p>
+                        <p>${articlesVendus.getDescription()}</p>
                     </div>
                     <div class="card-action">
                         <a href="#">Voir plus de détails</a>

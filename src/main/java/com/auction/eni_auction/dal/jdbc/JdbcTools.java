@@ -1,19 +1,31 @@
 package com.auction.eni_auction.dal.jdbc;
 
-import com.auction.eni_auction.dal.ConnectionProvider;
-
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
+public class JdbcTools {
 
-class JdbcTools {
-    static Connection connect() {
-        Connection cnx = null;
+    private static String urldb;
+    private static String userdb;
+    private static String passworddb;
+
+    //bloc d'initialisation statique
+    static {
         try {
-            cnx = ConnectionProvider.getConnection();
-        } catch (SQLException e) {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return cnx;
+
+        urldb = "jdbc:mysql://localhost/auction";
+        userdb = "root";
+        passworddb = "oktamer22";
     }
+
+    public static Connection getConnection() throws SQLException{
+
+        return DriverManager.getConnection(urldb, userdb, passworddb);
+    }
+
 }

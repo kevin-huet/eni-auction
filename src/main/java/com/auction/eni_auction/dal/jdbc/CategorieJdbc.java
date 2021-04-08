@@ -22,7 +22,7 @@ public class CategorieJdbc implements CategorieDAO {
 	private static final String DELETE = "DELETE FROM CATEGORIES WHERE no_categorie = ?";
 	@Override
 	public Categorie insert(Categorie var) throws DALException, SQLException {
-		try (Connection cnx = ConnectionProvider.getConnection()) {
+		try (Connection cnx = JdbcTools.getConnection()) {
 			PreparedStatement pStmt = cnx.prepareStatement(INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
 			pStmt.setString(1, var.getLibelle());
 			pStmt.executeUpdate();
@@ -44,7 +44,7 @@ public class CategorieJdbc implements CategorieDAO {
 	@Override
 	public Categorie selectById(int id) throws DALException {
 		Categorie categorie = null;
-    	try (Connection cnx = ConnectionProvider.getConnection()) {
+    	try (Connection cnx = JdbcTools.getConnection()) {
         	PreparedStatement pStmt = cnx.prepareStatement(SELECT_ONE);
         	pStmt.setInt(1, id);
         	ResultSet rs = pStmt.executeQuery();
