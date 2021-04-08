@@ -21,12 +21,12 @@ import com.auction.eni_auction.dal.dao.ArticleVenduDAO;
 public class ArticleVenduJdbc implements ArticleVenduDAO{
 	private static final String SELECT_BASE = "SELECT art.no_article, art.nom_article, art.description, art.date_debut_encheres, art.date_fin_encheres, art.prix_initial, art.prix_vente, art.no_utilisateur, art.no_categorie,c.libelle,e.date_enchere,e.montant_enchere,e.no_utilisateur,r.code_postal,r.rue,r.ville FROM ARTICLES_VENDUS art INNER JOIN CATEGORIES c ON art.no_categorie = c.no_categorie INNER JOIN ENCHERES e ON art.no_article = e.no_article INNER JOIN UTILISATEURS u ON art.no_utilisateur = u.no_utilisateur INNER JOIN RETRAITS r ON art.no_article = r.no_article";
 	private static final String INSERT_ONE = "INSERT INTO ARTICLES_VENDUS (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie) VALUES (?, ?, ?, ?, ?, ?, ?)";
-	private static final String ORDER_BY = " ORDER BY art.no_article DESC, e.date_enchere DESC";
+	private static final String ORDER_BY = " ORDER BY art.no_article DESC, e.montant_enchere DESC";
 	private static final String SELECT_USER = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE no_utilisateur = ?";
 	private static final String UPDATE =  "UPDATE ARTICLES_VENDUS SET nom_article = ?, description = ?, date_debut_encheres = ?, date_fin_encheres = ?, prix_initial = ?, no_categorie = ? WHERE no_article = ?";
 	private static final String INSERT_ENCHERE = "INSERT INTO ENCHERES (no_utilisateur, no_article, date_enchere, montant_enchere) VALUES (?, ?, CURRENT_TIMESTAMP, ?)";
 	private static final String UPDATE_PRICE = "UPDATE ARTICLES_VENDUS SET prix_vente = ? WHERE no_article = ?";
-	private static final String SELECT_PRICE = "SELECT prix_vente FROM ARTICLES_VENDUS WHERE no_article = ?";
+	private static final String SELECT_PRICE = "SELECT TOP 1 e.montant_enchere FROM ENCHERES WHERE no_article = ?";
 	private static final String INSERT_RETRAIT = "INSERT INTO RETRAITS (no_article, rue, code_postale, ville) VALUES (?, ?, ?, ?)";
 	
 	@Override
@@ -578,7 +578,10 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 	public int getCurrentHighest(int articleId) throws DALException {
 		int price = 0;
 		try (Connection cnx = ConnectionProvider.getConnection()) {
-        	PreparedStatement pStmt = cnx.prepareStatement(SELECT_PRICE);
+			StringBuilder statement = new StringBuilder();
+			statement.append(SELECT_PRICE);
+			statement.append(ORDER_BY);
+        	PreparedStatement pStmt = cnx.prepareStatement(statement.toString());
         	pStmt.setInt(1, articleId);
         
         	ResultSet rs = pStmt.executeQuery();
