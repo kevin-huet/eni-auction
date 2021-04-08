@@ -26,7 +26,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 	private static final String UPDATE =  "UPDATE ARTICLES_VENDUS SET nom_article = ?, description = ?, date_debut_encheres = ?, date_fin_encheres = ?, prix_initial = ?, no_categorie = ? WHERE no_article = ?";
 	private static final String INSERT_ENCHERE = "INSERT INTO ENCHERES (no_utilisateur, no_article, date_enchere, montant_enchere) VALUES (?, ?, CURRENT_TIMESTAMP, ?)";
 	private static final String UPDATE_PRICE = "UPDATE ARTICLES_VENDUS SET prix_vente = ? WHERE no_article = ?";
-	private static final String SELECT_PRICE = "SELECT TOP 1 e.montant_enchere FROM ENCHERES WHERE no_article = ?";
+	private static final String SELECT_PRICE = "SELECT TOP 1 montant_enchere FROM ENCHERES WHERE no_article = ?";
 	private static final String INSERT_RETRAIT = "INSERT INTO RETRAITS (no_article, rue, code_postale, ville) VALUES (?, ?, ?, ?)";
 	
 	@Override
