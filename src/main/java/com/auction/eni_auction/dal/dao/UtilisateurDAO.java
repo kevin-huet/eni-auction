@@ -17,4 +17,6 @@ public interface UtilisateurDAO extends DAO<Utilisateur> {
     HashMap<Integer, String> selectUtilisateursWithCurrentAuction() throws DALException;
 
     void updateCredit(Utilisateur utilisateur, int newCredit) throws DALException;
+    
+    int getCredit(int utilisateurId) throws DALException;
 }

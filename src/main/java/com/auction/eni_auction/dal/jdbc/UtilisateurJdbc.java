@@ -22,7 +22,7 @@ public class UtilisateurJdbc implements UtilisateurDAO {
 	private static final String UPDATE_ONE = "UPDATE UTILISATEURS SET pseudo = ?, nom = ?, prenom = ?, email = ?, telephone = ?, rue = ?, code_postal = ?, ville = ?, mot_de_passe = ?, administrateur = ?  WHERE no_utilisateur = ?";
     private static final String DELETE_ONE = "DELETE FROM UTILISATEURS WHERE no_utilisateur = ?";
     private static final String UPDATE_CREDIT = "UPDATE UTILISATEURS SET credit = ? WHERE no_utilisateur = ?";
-    
+    private static final String SELECT_CREDIT = "SELECT credit FROM UTILISATEURS WHERE no_utilisateur = ?";
 	@Override
     public Utilisateur insert(Utilisateur var) throws DALException, SQLException {
 		try (Connection cnx = ConnectionProvider.getConnection()) {
@@ -236,4 +236,25 @@ public class UtilisateurJdbc implements UtilisateurDAO {
 		}
 
     }
+    
+    @Override
+    public int getCredit(int utilisateurId) throws DALException {
+		int credit = 0;
+		try (Connection cnx = ConnectionProvider.getConnection()) {
+        	PreparedStatement pStmt = cnx.prepareStatement(SELECT_CREDIT);
+        	pStmt.setInt(1, utilisateurId);
+        
+        	ResultSet rs = pStmt.executeQuery();
+        	while(rs.next()) {
+        		credit = rs.getInt(1);
+        	}
+		} catch (SQLException e) {
+        	DALException exception = new DALException();
+			exception.addError(e.getErrorCode());
+			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return credit;
+	}
 }
