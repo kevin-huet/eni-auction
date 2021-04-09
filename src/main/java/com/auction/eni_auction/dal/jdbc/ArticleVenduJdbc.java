@@ -19,7 +19,9 @@ import com.auction.eni_auction.dal.DALException;
 import com.auction.eni_auction.dal.dao.ArticleVenduDAO;
 
 public class ArticleVenduJdbc implements ArticleVenduDAO{
-	private static final String SELECT_BASE = "SELECT art.no_article, art.nom_article, art.description, art.date_debut_encheres, art.date_fin_encheres, art.prix_initial, art.prix_vente, art.no_utilisateur, art.no_categorie,c.libelle,e.date_enchere,e.montant_enchere,e.no_utilisateur,r.code_postal,r.rue,r.ville FROM ARTICLES_VENDUS art INNER JOIN CATEGORIES c ON art.no_categorie = c.no_categorie INNER JOIN ENCHERES e ON art.no_article = e.no_article INNER JOIN UTILISATEURS u ON art.no_utilisateur = u.no_utilisateur INNER JOIN RETRAITS r ON art.no_article = r.no_article";
+	private static final String SELECT_BASE = "SELECT art.no_article, art.nom_article, art.description, art.date_debut_encheres, art.date_fin_encheres, art.prix_initial, art.prix_vente, art.no_utilisateur, art.no_categorie,c.libelle,e.date_enchere,e.montant_enchere,e.no_utilisateur,r.code_postal,r.rue,r.ville FROM ARTICLES_VENDUS art INNER JOIN CATEGORIES c ON art.no_categorie = c.no_categorie LEFT JOIN ENCHERES e ON art.no_article = e.no_article LEFT JOIN UTILISATEURS u ON art.no_utilisateur = u.no_utilisateur LEFT JOIN RETRAITS r ON art.no_article = r.no_article";
+	private static final String ARTICLE_BUY = "SELECT art.no_article, art.nom_article, art.description, art.date_debut_encheres, art.date_fin_encheres, art.prix_initial, art.prix_vente, art.no_utilisateur, art.no_categorie,c.libelle,e.date_enchere,e.montant_enchere,e.no_utilisateur FROM ARTICLES_VENDUS art INNER JOIN CATEGORIES c ON art.no_categorie = c.no_categorie INNER JOIN ENCHERES e ON art.no_article = e.no_article INNER JOIN UTILISATEURS u ON art.no_utilisateur = u.no_utilisateur";
+	private static final String ARTICLE_SELL = "SELECT art.no_article, art.nom_article, art.description, art.date_debut_encheres, art.date_fin_encheres, art.prix_initial, art.prix_vente, art.no_utilisateur, art.no_categorie,c.libelle,e.date_enchere,e.montant_enchere,e.no_utilisateur FROM ARTICLES_VENDUS art INNER JOIN CATEGORIES c ON art.no_categorie = c.no_categorie LEFT JOIN ENCHERES e ON art.no_article = e.no_article INNER JOIN UTILISATEURS u ON art.no_utilisateur = u.no_utilisateur";
 	private static final String INSERT_ONE = "INSERT INTO ARTICLES_VENDUS (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie) VALUES (?, ?, ?, ?, ?, ?, ?)";
 	private static final String ORDER_BY = " ORDER BY art.no_article DESC, e.montant_enchere DESC";
 	private static final String SELECT_USER = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE no_utilisateur = ?";
@@ -62,7 +64,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			StringBuilder statement = new StringBuilder();
 			statement.append(SELECT_BASE);
-			statement.append(" WHERE no_article = ?");
+			statement.append(" WHERE art.no_article = ?");
 			statement.append(ORDER_BY);
 			
         	PreparedStatement pStmt = cnx.prepareStatement(statement.toString());
@@ -163,11 +165,11 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
         	PreparedStatement pStmt = cnx.prepareStatement(statement.toString());
         	ResultSet rs = pStmt.executeQuery();
         	
-        	int lastId = 0;
+        	ArrayList<Integer> ids = new ArrayList<Integer>();
         	while(rs.next()) {
         		//skip row if the article is the same, since there is a row by bid and the latest and highest bid is always the first to appear
-        		if (lastId != rs.getInt(1)) {
-        			lastId = rs.getInt(1);
+        		if (!ids.contains(rs.getInt(1))) {
+        			ids.add(rs.getInt(1));
         			
         			Categorie categorie = new Categorie(rs.getInt(9), rs.getString(10));
             		PreparedStatement pStmt2 = cnx.prepareStatement(SELECT_USER);
@@ -285,88 +287,29 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			StringBuilder statement = new StringBuilder();
 			statement.append(SELECT_BASE);
-			statement.append(" WHERE art.nom_article LIKE '%?%' AND art.date_fin_encheres >= GETDATE() AND art.date_debut_encheres <= GETDATE()");
+			statement.append(" WHERE art.date_fin_encheres >= GETDATE() AND art.date_debut_encheres <= GETDATE()");
+			if(!name.equals("")) {
+				statement.append(" AND art.nom_article LIKE '%?%'");
+			}
 			if (categorieId != 0) {
 				statement.append(" AND art.no_categorie = ?");
 			}
 			statement.append(ORDER_BY);
 			
         	PreparedStatement pStmt = cnx.prepareStatement(statement.toString());
+        	int index = 1;
+        	if(!name.equals("")) {
+				pStmt.setString(index, name);
+				index++;
+			}
+			if (categorieId != 0) {
+				pStmt.setInt(index, categorieId);
+				index++;
+			}
+        	
         	ResultSet rs = pStmt.executeQuery();
         	
-        	int lastId = 0;
-        	while(rs.next()) {
-        		//skip row if the article is the same, since there is a row by bid and the latest and highest bid is always the first to appear
-        		if (lastId != rs.getInt(1)) {
-        			lastId = rs.getInt(1);
-        			
-        			Categorie categorie = new Categorie(rs.getInt(9), rs.getString(10));
-            		PreparedStatement pStmt2 = cnx.prepareStatement(SELECT_USER);
-            		pStmt2.setInt(1, rs.getInt(8));
-            		ResultSet rs2 = pStmt2.executeQuery();
-            		Utilisateur seller = null;
-            		while (rs2.next()) {
-            			seller = new Utilisateur(
-            					rs2.getInt("no_utilisateur"),
-            					rs2.getString("pseudo"),
-            					rs2.getString("nom"),
-            					rs2.getString("prenom"),
-            					rs2.getString("email"),
-            					rs2.getString("telephone"),
-            					rs2.getString("rue"),
-            					rs2.getString("code_postal"),
-            					rs2.getString("ville"),
-                				rs2.getString("mot_de_passe"),
-                				rs2.getInt("credit"),
-                				rs2.getBoolean("administrateur")
-                			);
-            		}
-            		
-            		ArticlesVendus article = new ArticlesVendus(
-            				rs.getInt(1),
-            				rs.getString(2),
-            				rs.getString(3),
-            				rs.getDate(4).toLocalDate(),
-            				rs.getDate(5).toLocalDate(),
-            				rs.getInt(6),
-            				rs.getInt(7),
-            				seller,
-            				categorie
-            		);
-            		
-            		PreparedStatement pStmt3 = cnx.prepareStatement(SELECT_USER);
-            		pStmt3.setInt(1, rs.getInt(13));
-            		ResultSet rs3 = pStmt3.executeQuery();
-            		Utilisateur buyer = null;
-            		while (rs3.next()) {
-            			buyer = new Utilisateur(
-            					rs3.getInt("no_utilisateur"),
-            					rs3.getString("pseudo"),
-            					rs3.getString("nom"),
-            					rs3.getString("prenom"),
-            					rs3.getString("email"),
-            					rs3.getString("telephone"),
-            					rs3.getString("rue"),
-            					rs3.getString("code_postal"),
-            					rs3.getString("ville"),
-            					rs3.getString("mot_de_passe"),
-            					rs3.getInt("credit"),
-            					rs3.getBoolean("administrateur")
-                			);
-            		}
-            		
-            		Encheres enchere = new Encheres(
-            				article,
-            				buyer,
-            				rs.getInt(12),
-            				rs.getTimestamp(11).toLocalDateTime()
-            		);
-            		
-            		article.setEnchere(enchere);
-            		
-            		articles.add(article);
-        		}
-        	}
+        	articles = (ArrayList<ArticlesVendus>) this.createList(rs, cnx);
         	
 		} catch (SQLException e) {
         	DALException exception = new DALException();
@@ -384,23 +327,35 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 		ArrayList<ArticlesVendus> articles = new ArrayList<ArticlesVendus>();
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			StringBuilder statement = new StringBuilder();
-			statement.append(SELECT_BASE);
-			statement.append(" WHERE art.nom_article LIKE '%?%'");
+			if (!state.equals("ouvert")) {
+				statement.append(ARTICLE_BUY);
+			} else {
+				statement.append(SELECT_BASE);
+			}
+			statement.append(" WHERE art.no_utilisateur <> ?");
+			int index = 1; 
+			if(!name.equals("")) {
+				statement.append(" AND art.nom_article LIKE '%?%'");
+			}
 			if (categorieId != 0) {
 				statement.append(" AND art.no_categorie = ?");
 			}
 			if (state.equals("ouvert")) {
 				statement.append(" AND art.date_fin_encheres >= GETDATE() AND art.date_debut_encheres <= GETDATE()");
 			} else if (state.equals("en cours")) {
-				statement.append(" AND art.date_fin_encheres >) GETDATE() AND art.date_debut_encheres <= GETDATE() AND e.no_utilisateur = ?");
+				statement.append(" AND art.date_fin_encheres > GETDATE() AND art.date_debut_encheres <= GETDATE() AND e.no_utilisateur = ?");
 			} else if (state.equals("finis")) {
 				statement.append("AND art.date_fin_encheres < GETDATE() AND e.no_utilisateur = ? AND e.montant_enchere = art.prix_vente");
 			}
 			statement.append(ORDER_BY);
-			
-        	PreparedStatement pStmt = cnx.prepareStatement(statement.toString());
-        	pStmt.setString(1, name);
-        	int index = 2; 
+			PreparedStatement pStmt = cnx.prepareStatement(statement.toString());
+			pStmt.setInt(index, utilisateur.getNoUtilisateur());
+			index++;
+			if (!name.equals("")) {
+				pStmt.setString(index, name);
+				index++;
+			}
+        	
         	if (categorieId != 0) {
 				pStmt.setInt(index, categorieId);
 				index++;
@@ -430,8 +385,11 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 		ArrayList<ArticlesVendus> articles = new ArrayList<ArticlesVendus>();
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			StringBuilder statement = new StringBuilder();
-			statement.append(SELECT_BASE);
-			statement.append(" WHERE art.no_utilisateur = ? AND art.nom_article LIKE '%?%'");
+			statement.append(ARTICLE_SELL);
+			statement.append(" WHERE art.no_utilisateur = ?");
+			if(!name.equals("")) {
+				statement.append(" AND art.nom_article LIKE '%?%'");
+			}
 			if (categorieId != 0) {
 				statement.append(" AND art.no_categorie = ?");
 			}
@@ -445,17 +403,17 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 			statement.append(ORDER_BY);
 			
         	PreparedStatement pStmt = cnx.prepareStatement(statement.toString());
-        	pStmt.setString(1, name);
+        	pStmt.setInt(1, utilisateur.getNoUtilisateur());
         	int index = 2; 
+        	if (!name.equals("")) {
+				pStmt.setString(index, name);
+				index++;
+			}
         	if (categorieId != 0) {
 				pStmt.setInt(index, categorieId);
 				index++;
 			}
-        	if (state.equals("en cours")) {
-				pStmt.setInt(index, utilisateur.getNoUtilisateur());
-			} else if (state.equals("finis")) {
-				pStmt.setInt(index, utilisateur.getNoUtilisateur());
-			}
+        	
         	ResultSet rs = pStmt.executeQuery();
         	
         	articles = (ArrayList<ArticlesVendus>) this.createList(rs, cnx);
