@@ -38,13 +38,11 @@ public class HomeServlet extends HttpServlet {
         } catch (DALException e) {
             e.printStackTrace();
         }
-        request.setAttribute("articles", listArticles);
-        if (listArticles.isEmpty())
-            request.setAttribute("test", "vide");
-        else {
-            request.setAttribute("test", "pas vide");
-            request.setAttribute("objet", listArticles.get(0));
+        for (ArticlesVendus v:listArticles) {
+            System.out.println(v.getNoArticle());
         }
+        request.setAttribute("articles", listArticles);
+
         this.getServletContext().getRequestDispatcher( "/home.jsp" ).forward( request, response );
     }
 

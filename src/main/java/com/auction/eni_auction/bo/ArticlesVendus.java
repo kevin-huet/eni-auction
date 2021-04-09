@@ -27,7 +27,7 @@ public class ArticlesVendus {
     
     private Retraits retrait;
 
-    public ArticlesVendus(int noArticFle, String nom, String description, LocalDate beginAuction, LocalDate endAuction,
+    public ArticlesVendus(int noArticle, String nom, String description, LocalDate beginAuction, LocalDate endAuction,
 			int initialPrice, int sellPrice, Utilisateur utilisateur, Categorie categorie) {
 		super();
 		this.noArticle = noArticle;

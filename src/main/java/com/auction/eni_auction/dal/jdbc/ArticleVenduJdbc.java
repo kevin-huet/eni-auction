@@ -129,8 +129,8 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
         		}
         		
         		Encheres enchere = new Encheres(
-        				article,
-        				buyer,
+        				article.getNoArticle(),
+        				buyer.getNoUtilisateur(),
         				rs.getInt(12),
         				rs.getTimestamp(11).toLocalDateTime()
         		);
@@ -191,7 +191,6 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
                 				rs2.getBoolean("administrateur")
                 			);
             		}
-            		
             		ArticlesVendus article = new ArticlesVendus(
             				rs.getInt(1),
             				rs.getString(2),
@@ -226,8 +225,8 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
             		}
             		
             		Encheres enchere = new Encheres(
-            				article,
-            				buyer,
+            				article.getNoArticle(),
+            				buyer.getNoUtilisateur(),
             				rs.getInt(12),
             				rs.getTimestamp(11).toLocalDateTime()
             		);
@@ -430,7 +429,6 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 		ArrayList<ArticlesVendus> articles = new ArrayList<ArticlesVendus>();
 		int lastId = 0;
     	while(rs.next()) {
-    		System.out.println("test debug");
     		//skip row if the article is the same, since there is a row by bid and the latest and highest bid is always the first to appear
     		if (lastId != rs.getInt(1)) {
     			lastId = rs.getInt(1);
@@ -456,8 +454,8 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
             				rs2.getBoolean("administrateur")
             			);
         		}
-        		
-        		ArticlesVendus article = new ArticlesVendus(
+
+				ArticlesVendus article = new ArticlesVendus(
         				rs.getInt(1),
         				rs.getString(2),
         				rs.getString(3),
@@ -468,7 +466,6 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
         				seller,
         				categorie
         		);
-        		
         		// if there is a bid add it
         		if (rs.getInt(12) != 0) {
         			PreparedStatement pStmt3 = cnx.prepareStatement(SELECT_USER);
@@ -493,8 +490,8 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
             		}
             		
             		Encheres enchere = new Encheres(
-            				article,
-            				buyer,
+            				article.getNoArticle(),
+            				buyer.getNoUtilisateur(),
             				rs.getInt(12),
             				rs.getTimestamp(11).toLocalDateTime()
             		);
@@ -523,6 +520,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
         	pStmt2.setInt(2, articleId);
         	pStmt2.executeQuery();
 		} catch (SQLException e) {
+			e.printStackTrace();
         	DALException exception = new DALException();
 			exception.addError(e.getErrorCode());
 			throw exception;

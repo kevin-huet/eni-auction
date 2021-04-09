@@ -9,8 +9,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-public interface EnchereDAO extends DAO<Encheres> {
-    List<Integer> getNoArticlesByUtilisateurAndEtat(Utilisateur utilisateur, String state) throws DALException, SQLException;
-    List<Integer> getNoArticlesWonByUtilisateur(Utilisateur utilisateur) throws DALException, SQLException;
-    HashMap<Integer, Integer> getAmountAndPseudoOfBestOffer(ArticlesVendus articleVendu) throws DALException, SQLException;
+public interface EnchereDAO {
+    Encheres insert(Encheres var) throws DALException, SQLException;
+    Encheres selectById(int articleId, int utilisateurId) throws DALException;
+    void update(Encheres var) throws DALException;
+    void delete(int articleId, int utilisateurId) throws DALException;
 }

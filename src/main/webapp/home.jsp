@@ -17,15 +17,18 @@
 
 </head>
 <body>
-
-<jsp:include page="navbar.jsp" />
-
+<c:if test="${sessionScope.user == null}">
+    <jsp:include page="navbar.jsp" />
+</c:if>
+<c:if test="${sessionScope.user != null}">
+    <jsp:include page="navbar_auth.jsp" />
+</c:if>
 <div class="parallax-container">
     <div class="parallax"><img src="https://i.pinimg.com/originals/c0/83/7a/c0837a3f2855c632be8dbde4b7eeccba.jpg"></div>
 </div>
 <div class="section white">
     <div class="row container">
-        <h2 class="header">Liste des dernirèes enchères <%= request.getAttribute("test") %></h2>
+        <h2 class="header">Liste des dernirèes enchères </h2>
         <p class="grey-text text-darken-3 lighten-3">
         </p>
 
@@ -43,10 +46,10 @@
                         <span class="card-title">${articlesVendus.getNom()}</span>
                     </div>
                     <div class="card-content">
-                        <p>${articlesVendus.getDescription()}</p>
+                        <p>${articlesVendus.getNoArticle()} - ${articlesVendus.getDescription()}</p>
                     </div>
                     <div class="card-action">
-                        <a href="#">Voir plus de détails</a>
+                        <a href="<%=request.getContextPath()+"/article?id="%>${articlesVendus.getNoArticle()}">Voir plus de détails</a>
                     </div>
                 </div>
             </div>

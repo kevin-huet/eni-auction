@@ -22,8 +22,7 @@ public class LogoutServlet extends HttpServlet {
         session.invalidate();
 
         /* Redirection vers la page de connexion */
-        response.sendRedirect( request.getContextPath() + "/");
-    }
+        this.getServletContext().getRequestDispatcher( "/home.jsp" ).forward( request, response );    }
 
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
