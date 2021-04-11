@@ -16,24 +16,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 
-@WebServlet(name = "articleServlet", value = "/article/*")
-public class ArticleServlet extends HttpServlet {
+@WebServlet(name = "articleCreationServlet", value = "/article/create")
+public class ArticleCreationServlet extends HttpServlet {
 
 
 
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String articleId = (request.getParameter("id"));
-        ArticleVenduJdbc articleVenduJdbc = new ArticleVenduJdbc();
-        ArticlesVendus article = null;
-        try {
-           article = articleVenduJdbc.selectById(Integer.parseInt(articleId));
-        } catch (DALException e) {
-            e.printStackTrace();
-        }
-        request.setAttribute("derniereEnchere", article.getEnchere());
-        request.setAttribute("article", article);
-        System.out.println(article.getEnchere().getUtilisateur().getPseudo());
         this.getServletContext().getRequestDispatcher( "/article.jsp" ).forward( request, response );
 
     }

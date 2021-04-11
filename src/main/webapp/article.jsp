@@ -18,8 +18,12 @@
 </head>
 <body>
 
-<jsp:include page="navbar.jsp" />
-
+<c:if test="${sessionScope.user == null}">
+    <jsp:include page="navbar.jsp" />
+</c:if>
+<c:if test="${sessionScope.user != null}">
+    <jsp:include page="navbar_auth.jsp" />
+</c:if>
 <div class="section white">
     <div class="row container">
         <h2 class="header">${requestScope['article'].getNom()}</h2>
@@ -36,18 +40,33 @@
                     <div class="card">
                         <div class="card-image">
                             <img src="https://i.pinimg.com/originals/c0/83/7a/c0837a3f2855c632be8dbde4b7eeccba.jpg">
-                            <span class="card-title">${requestScope['article'].getNom()}</span>
+                            <span class="card-title">Créer un article</span>
                         </div>
                         <div class="card-content">
-                            <p>${requestScope['article'].getDescription()}</p>
-                            <form method="post" action="<%=request.getContextPath()+"/article?id="%>${requestScope['article'].getNoArticle()}">
+                            <form method="post" action="<%=request.getContextPath()+"/enchere?id="%>${requestScope['article'].getNoArticle()}">
                                 <div class="input-field">
-                                    <input name="price" id="price" type="text" class="validate">
-                                    <label for="price">Enchérir</label>
+                                    <input name="nom" id="nom" type="text" class="validate">
+                                    <label for="nom">Nom</label>
                                 </div>
-                                <div class="input-field" hidden>
-                                    <input value="${requestScope['article'].getNoArticle()}" id="articleId" name="articleId" type="text" class="validate">
-                                    <label class="active" for="articleId">articleId</label>
+                                <div class="input-field">
+                                    <input name="desc" id="desc" type="text" class="validate">
+                                    <label for="desc">Description</label>
+                                </div>
+                                <div class="input-field">
+                                    <input name="date" id="date" type="date" class="validate">
+                                    <label for="date">Date de fin</label>
+                                </div>
+                                <div class="input-field">
+                                    <input name="price" id="price" type="number" class="validate">
+                                    <label for="price">Prix</label>
+                                </div>
+                                <div class="input-field col s12">
+                                    <select name="cat" id="cat">
+                                        <option value="" disabled selected>Choisissez une catégorie</option>
+                                        <option value="1">Option 1</option>
+
+                                    </select>
+                                    <label for="cat">Catégorie</label>
                                 </div>
                                 <button class="btn" type="submit">Valider</button>
                             </form>

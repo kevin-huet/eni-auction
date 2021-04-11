@@ -12,12 +12,16 @@ import javax.servlet.annotation.*;
 
 @WebServlet(name = "registerServlet", value = "/register")
 public class RegisterServlet extends HttpServlet {
-    private String message;
 
     public void init() {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String alert = request.getParameter("alert");
+
+        if (alert != null && !alert.equals("")) {
+            request.setAttribute("error", "Email ou Pseudo déjà existant");
+        }
         this.getServletContext().getRequestDispatcher( "/register.jsp" ).forward( request, response );
 
     }
@@ -36,14 +40,14 @@ public class RegisterServlet extends HttpServlet {
         Utilisateur user = new Utilisateur(pseudo, nom, prenom, email, telephone, rue, codepostal, ville, password, 0, false);
 
         try {
-            if (utilisateurJdbc.checkForUniquePseudoAndMail(pseudo, email);
+            if (utilisateurJdbc.checkForUniquePseudoAndMail(pseudo, email)) {
                 utilisateurJdbc.insert(user);
-            else
-                request.setAttribute("error", "Email ou Pseudo déjà existant");
+                response.sendRedirect( request.getContextPath() + "/login?alert=register");
+            } else
+                response.sendRedirect( request.getContextPath() + "/register?alert=alreadyExist");
         } catch (DALException | SQLException e) {
             e.printStackTrace();
         }
-        response.sendRedirect( request.getContextPath() + "/login?alert=register");
     }
 
     public void destroy() {

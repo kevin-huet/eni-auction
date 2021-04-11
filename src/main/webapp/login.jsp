@@ -5,7 +5,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <head>
-    <title>JSP - Hello World</title>
+    <title>Auction - Connexion</title>
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -15,8 +15,12 @@
 
 </head>
 <body>
-<jsp:include page="navbar.jsp" />
-
+<c:if test="${sessionScope.user == null}">
+    <jsp:include page="navbar.jsp" />
+</c:if>
+<c:if test="${sessionScope.user != null}">
+    <jsp:include page="navbar_auth.jsp" />
+</c:if>
 <div class="container" style="min-height:85vh;">
     <div class="row" id="alert_box">
 

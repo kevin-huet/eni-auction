@@ -19,6 +19,8 @@ public class LogoutServlet extends HttpServlet {
 
         /* Récupération et destruction de la session en cours */
         HttpSession session = request.getSession();
+        session.setAttribute("user", null);
+
         session.invalidate();
 
         /* Redirection vers la page de connexion */
