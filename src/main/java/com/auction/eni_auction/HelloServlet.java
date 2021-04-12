@@ -1,6 +1,6 @@
 package com.auction.eni_auction;
 
-import com.auction.eni_auction.bo.ArticlesVendus;
+import com.auction.eni_auction.bo.ArticleVendu;
 import com.auction.eni_auction.bo.Categorie;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;

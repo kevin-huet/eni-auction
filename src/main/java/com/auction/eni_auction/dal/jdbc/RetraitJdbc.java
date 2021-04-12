@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.auction.eni_auction.bo.Retraits;
+import com.auction.eni_auction.bo.Retrait;
 import com.auction.eni_auction.dal.ConnectionProvider;
 import com.auction.eni_auction.dal.DALException;
 import com.auction.eni_auction.dal.dao.RetraitDAO;
@@ -20,7 +20,7 @@ public class RetraitJdbc implements RetraitDAO{
 	private static final String DELETE = "DELETE FROM RETRAITS WHERE no_article = ?";
 	
 	@Override
-	public Retraits insert(Retraits var) throws DALException, SQLException {
+	public Retrait insert(Retrait var) throws DALException, SQLException {
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			PreparedStatement pStmt = cnx.prepareStatement(INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
 			pStmt.setInt(1, var.getArticle().getNoArticle());
@@ -40,17 +40,17 @@ public class RetraitJdbc implements RetraitDAO{
 		return var;
 	}
 	@Override
-	public Retraits selectById(int id) throws DALException {
+	public Retrait selectById(int id) throws DALException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public List<Retraits> selectAll() throws DALException {
+	public List<Retrait> selectAll() throws DALException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public void update(Retraits var) throws DALException {
+	public void update(Retrait var) throws DALException {
 		try (Connection cnx = ConnectionProvider.getConnection()) {
     		PreparedStatement pStmt = cnx.prepareStatement(UPDATE);
     		pStmt.setString(1, var.getRue());

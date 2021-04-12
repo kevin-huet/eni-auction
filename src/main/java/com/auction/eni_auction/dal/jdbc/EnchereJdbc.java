@@ -1,8 +1,8 @@
 package com.auction.eni_auction.dal.jdbc;
 
-import com.auction.eni_auction.bo.ArticlesVendus;
+import com.auction.eni_auction.bo.ArticleVendu;
 import com.auction.eni_auction.bo.Categorie;
-import com.auction.eni_auction.bo.Encheres;
+import com.auction.eni_auction.bo.Enchere;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.ConnectionProvider;
 import com.auction.eni_auction.dal.DALException;
@@ -20,9 +20,9 @@ public class EnchereJdbc implements EnchereDAO {
 	private static final String SELECT_ONE = "SELECT no_utilisateur, no_article, date_enchere, montant_enchere FROM ENCHERES WHERE no_utilisateur = ? AND no_article = ?";
 	private static final String UPDATE = "UPDATE ENCHERES SET date_enchere = CURRENT_TIMESTAMP, montant_enchere = ? WHERE no_utilisateur = ? AND no_article = ?";
 	@Override
-	public Encheres insert(Encheres var) throws DALException, SQLException {
+	public Enchere insert(Enchere var) throws DALException, SQLException {
 		try (Connection cnx = ConnectionProvider.getConnection()) {
-			this.updatePrevious(var.getNo_article(), cnx);
+			this.updatePrevious(var.getArticle().getNoArticle(), cnx);
 
 			//add the new bid and update its user's credit
 			PreparedStatement pStmt3 = cnx.prepareStatement(INSERT);
@@ -44,8 +44,8 @@ public class EnchereJdbc implements EnchereDAO {
 	}
 
 	@Override
-	public Encheres selectById(int articleId, int utilisateurId) throws DALException {
-		Encheres enchere = null;
+	public Enchere selectById(int articleId, int utilisateurId) throws DALException {
+		Enchere enchere = null;
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			PreparedStatement pStmt = cnx.prepareStatement(SELECT_ONE);
 			pStmt.setInt(1, utilisateurId);
@@ -53,7 +53,7 @@ public class EnchereJdbc implements EnchereDAO {
 			ResultSet rs = pStmt.executeQuery();
 
 			while (rs.next()) {
-				enchere = new Encheres(
+				enchere = new Enchere(
 						rs.getInt("no_article"),
 						rs.getInt("no_utilisateur"),
 						rs.getInt("montant_enchere"),
@@ -72,14 +72,14 @@ public class EnchereJdbc implements EnchereDAO {
 	}
 
 	@Override
-	public void update(Encheres var) throws DALException {
+	public void update(Enchere var) throws DALException {
 		try (Connection cnx = ConnectionProvider.getConnection()) {
-			this.updatePrevious(var.getNo_article(), cnx);
+			this.updatePrevious(var.getArticle().getNoArticle(), cnx);
 
 			PreparedStatement pStmt = cnx.prepareStatement(UPDATE);
 			pStmt.setInt(1, var.getMontantEnchere());
-			pStmt.setInt(2, var.getNo_utilisateur());
-			pStmt.setInt(3, var.getNo_article());
+			pStmt.setInt(2, var.getUtilisateur().getNoUtilisateur());
+			pStmt.setInt(3, var.getArticle().getNoArticle());
 			pStmt.executeQuery();
 
 			this.updateLatest(cnx, var);
@@ -119,13 +119,13 @@ public class EnchereJdbc implements EnchereDAO {
 		}
 	}
 
-	public void updateLatest(Connection cnx, Encheres var) throws SQLException {
+	public void updateLatest(Connection cnx, Enchere var) throws SQLException {
 		StringBuilder statement2 = new StringBuilder();
 		statement2.append("UPDATE UTILISATEURS SET credit = credit - ");
 		statement2.append(var.getMontantEnchere());
 		statement2.append(" WHERE no_utilisateur = ?");
 		PreparedStatement pStmt4 = cnx.prepareStatement(statement2.toString());
-		pStmt4.setInt(1, var.getNo_utilisateur());
+		pStmt4.setInt(1, var.getUtilisateur().getNoUtilisateur());
 		pStmt4.executeQuery();
 	}
 

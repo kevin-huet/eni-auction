@@ -3,7 +3,7 @@ package com.auction.eni_auction.bo;
 import java.time.LocalDate;
 import java.util.Date;
 
-public class ArticlesVendus {
+public class ArticleVendu {
 
     private int noArticle;
 
@@ -23,11 +23,11 @@ public class ArticlesVendus {
 
     private Categorie categorie;
     
-    private Encheres enchere;
+    private Enchere enchere;
     
-    private Retraits retrait;
+    private Retrait retrait;
 
-    public ArticlesVendus(int noArticle, String nom, String description, LocalDate beginAuction, LocalDate endAuction,
+    public ArticleVendu(int noArticle, String nom, String description, LocalDate beginAuction, LocalDate endAuction,
 			int initialPrice, int sellPrice, Utilisateur utilisateur, Categorie categorie) {
 		super();
 		this.noArticle = noArticle;
@@ -43,7 +43,7 @@ public class ArticlesVendus {
     
    
 
-	public ArticlesVendus(String nom, String description, LocalDate beginAuction, LocalDate endAuction, int initialPrice,
+	public ArticleVendu(String nom, String description, LocalDate beginAuction, LocalDate endAuction, int initialPrice,
 			int sellPrice, Utilisateur utilisateur, Categorie categorie) {
 		super();
 		this.nom = nom;
@@ -132,25 +132,25 @@ public class ArticlesVendus {
 
 
 
-	public Encheres getEnchere() {
+	public Enchere getEnchere() {
 		return enchere;
 	}
 
 
 
-	public void setEnchere(Encheres enchere) {
+	public void setEnchere(Enchere enchere) {
 		this.enchere = enchere;
 	}
 
 
 
-	public Retraits getRetrait() {
+	public Retrait getRetrait() {
 		return retrait;
 	}
 
 
 
-	public void setRetrait(Retraits retrait) {
+	public void setRetrait(Retrait retrait) {
 		this.retrait = retrait;
 	}
 }

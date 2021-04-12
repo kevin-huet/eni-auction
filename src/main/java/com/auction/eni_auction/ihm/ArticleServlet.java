@@ -1,7 +1,7 @@
 package com.auction.eni_auction.ihm;
 
-import com.auction.eni_auction.bo.ArticlesVendus;
-import com.auction.eni_auction.bo.Encheres;
+import com.auction.eni_auction.bo.ArticleVendu;
+import com.auction.eni_auction.bo.Enchere;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;
 import com.auction.eni_auction.dal.jdbc.ArticleVenduJdbc;
@@ -25,7 +25,7 @@ public class ArticleServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String articleId = (request.getParameter("id"));
         ArticleVenduJdbc articleVenduJdbc = new ArticleVenduJdbc();
-        ArticlesVendus article = null;
+        ArticleVendu article = null;
         try {
            article = articleVenduJdbc.selectById(Integer.parseInt(articleId));
         } catch (DALException e) {

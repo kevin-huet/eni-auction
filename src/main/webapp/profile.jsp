@@ -1,5 +1,5 @@
 <%@ page import="java.util.List" %>
-<%@ page import="com.auction.eni_auction.bo.ArticlesVendus" %>
+<%@ page import="com.auction.eni_auction.bo.ArticleVendu" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 

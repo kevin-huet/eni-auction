@@ -9,10 +9,10 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.auction.eni_auction.bo.ArticlesVendus;
+import com.auction.eni_auction.bo.ArticleVendu;
 import com.auction.eni_auction.bo.Categorie;
-import com.auction.eni_auction.bo.Encheres;
-import com.auction.eni_auction.bo.Retraits;
+import com.auction.eni_auction.bo.Enchere;
+import com.auction.eni_auction.bo.Retrait;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.ConnectionProvider;
 import com.auction.eni_auction.dal.DALException;
@@ -31,7 +31,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 	private static final String ARTICLE_BUY = "SELECT art.no_article, art.nom_article, art.description, art.date_debut_encheres, art.date_fin_encheres, art.prix_initial, art.prix_vente, art.no_utilisateur, art.no_categorie,c.libelle,e.date_enchere,e.montant_enchere,e.no_utilisateur FROM ARTICLES_VENDUS art INNER JOIN CATEGORIES c ON art.no_categorie = c.no_categorie INNER JOIN ENCHERES e ON art.no_article = e.no_article INNER JOIN UTILISATEURS u ON art.no_utilisateur = u.no_utilisateur";
 	private static final String ARTICLE_SELL = "SELECT art.no_article, art.nom_article, art.description, art.date_debut_encheres, art.date_fin_encheres, art.prix_initial, art.prix_vente, art.no_utilisateur, art.no_categorie,c.libelle,e.date_enchere,e.montant_enchere,e.no_utilisateur FROM ARTICLES_VENDUS art INNER JOIN CATEGORIES c ON art.no_categorie = c.no_categorie LEFT JOIN ENCHERES e ON art.no_article = e.no_article INNER JOIN UTILISATEURS u ON art.no_utilisateur = u.no_utilisateur";
 
-	public ArticlesVendus insert(ArticlesVendus var) throws DALException, SQLException {
+	public ArticleVendu insert(ArticleVendu var) throws DALException, SQLException {
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			PreparedStatement pStmt = cnx.prepareStatement(INSERT_ONE, PreparedStatement.RETURN_GENERATED_KEYS);
 			pStmt.setString(1, var.getNom());
@@ -58,8 +58,8 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 	}
 
 	@Override
-	public ArticlesVendus selectById(int id) throws DALException {
-		ArticlesVendus article = null;
+	public ArticleVendu selectById(int id) throws DALException {
+		ArticleVendu article = null;
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			StringBuilder statement = new StringBuilder();
 			statement.append(SELECT_BASE);
@@ -95,7 +95,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
             			);
         		}
         		
-        		article = new ArticlesVendus(
+        		article = new ArticleVendu(
         				rs.getInt(1),
         				rs.getString(2),
         				rs.getString(3),
@@ -128,16 +128,16 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
             			);
         		}
         		
-        		Encheres enchere = new Encheres(
-        				article.getNoArticle(),
-        				buyer.getNoUtilisateur(),
+        		Enchere enchere = new Enchere(
+        				article,
+        				buyer,
         				rs.getInt(12),
         				rs.getTimestamp(11).toLocalDateTime()
         		);
         		
         		article.setEnchere(enchere);
         		
-        		Retraits retrait = new Retraits(article, rs.getString(15), rs.getString(14), rs.getString(16));
+        		Retrait retrait = new Retrait(article, rs.getString(15), rs.getString(14), rs.getString(16));
         		article.setRetrait(retrait);
         		
         		first = false;
@@ -154,8 +154,8 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 	}
 
 	@Override
-	public List<ArticlesVendus> selectAll() throws DALException {
-		ArrayList<ArticlesVendus> articles = new ArrayList<ArticlesVendus>();
+	public List<ArticleVendu> selectAll() throws DALException {
+		ArrayList<ArticleVendu> articles = new ArrayList<ArticleVendu>();
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			StringBuilder statement = new StringBuilder();
 			statement.append(SELECT_BASE);
@@ -191,7 +191,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
                 				rs2.getBoolean("administrateur")
                 			);
             		}
-            		ArticlesVendus article = new ArticlesVendus(
+            		ArticleVendu article = new ArticleVendu(
             				rs.getInt(1),
             				rs.getString(2),
             				rs.getString(3),
@@ -224,9 +224,9 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
                 			);
             		}
             		
-            		Encheres enchere = new Encheres(
-            				article.getNoArticle(),
-            				buyer.getNoUtilisateur(),
+            		Enchere enchere = new Enchere(
+            				article,
+            				buyer,
             				rs.getInt(12),
             				rs.getTimestamp(11).toLocalDateTime()
             		);
@@ -248,7 +248,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 	}
 
 	@Override
-	public void update(ArticlesVendus var) throws DALException {
+	public void update(ArticleVendu var) throws DALException {
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			PreparedStatement pStmt = cnx.prepareStatement(UPDATE);
 			pStmt.setString(1, var.getNom());
@@ -280,8 +280,8 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 	 * @param name Filter string, empty string if no filter wanted
 	 * @param categorieId Integer corresponding to the categorie we want to filter by, 0 if no filter wanted
 	 */
-	public List<ArticlesVendus> filterBase(String name, int categorieId) throws DALException {
-		ArrayList<ArticlesVendus> articles = new ArrayList<ArticlesVendus>();
+	public List<ArticleVendu> filterBase(String name, int categorieId) throws DALException {
+		ArrayList<ArticleVendu> articles = new ArrayList<ArticleVendu>();
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			StringBuilder statement = new StringBuilder();
 			statement.append(SELECT_BASE);
@@ -307,7 +307,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 
 			ResultSet rs = pStmt.executeQuery();
 
-			articles = (ArrayList<ArticlesVendus>) this.createList(rs, cnx);
+			articles = (ArrayList<ArticleVendu>) this.createList(rs, cnx);
 		} catch (SQLException e) {
 			e.printStackTrace();
         	DALException exception = new DALException();
@@ -320,9 +320,9 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 	}
 
 	@Override
-	public List<ArticlesVendus> filterBuy(String name, int categorieId, String state, Utilisateur utilisateur)
+	public List<ArticleVendu> filterBuy(String name, int categorieId, String state, Utilisateur utilisateur)
 			throws DALException {
-		ArrayList<ArticlesVendus> articles = new ArrayList<ArticlesVendus>();
+		ArrayList<ArticleVendu> articles = new ArrayList<ArticleVendu>();
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			StringBuilder statement = new StringBuilder();
 			if (!state.equals("ouvert")) {
@@ -363,7 +363,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 			}
         	ResultSet rs = pStmt.executeQuery();
         	
-        	articles = (ArrayList<ArticlesVendus>) this.createList(rs, cnx);
+        	articles = (ArrayList<ArticleVendu>) this.createList(rs, cnx);
         	
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -377,9 +377,9 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 	}
 
 	@Override
-	public List<ArticlesVendus> filterSell(String name, int categorieId, String state, Utilisateur utilisateur)
+	public List<ArticleVendu> filterSell(String name, int categorieId, String state, Utilisateur utilisateur)
 			throws DALException {
-		ArrayList<ArticlesVendus> articles = new ArrayList<ArticlesVendus>();
+		ArrayList<ArticleVendu> articles = new ArrayList<ArticleVendu>();
 		try (Connection cnx = ConnectionProvider.getConnection()) {
 			StringBuilder statement = new StringBuilder();
 			statement.append(ARTICLE_SELL);
@@ -413,7 +413,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 			}
 			ResultSet rs = pStmt.executeQuery();
 
-			articles = (ArrayList<ArticlesVendus>) this.createList(rs, cnx);
+			articles = (ArrayList<ArticleVendu>) this.createList(rs, cnx);
 		} catch (SQLException e) {
 			e.printStackTrace();
         	DALException exception = new DALException();
@@ -425,8 +425,8 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 		return articles;
 	}
 	
-	public List<ArticlesVendus> createList(ResultSet rs, Connection cnx) throws SQLException {
-		ArrayList<ArticlesVendus> articles = new ArrayList<ArticlesVendus>();
+	public List<ArticleVendu> createList(ResultSet rs, Connection cnx) throws SQLException {
+		ArrayList<ArticleVendu> articles = new ArrayList<ArticleVendu>();
 		int lastId = 0;
     	while(rs.next()) {
     		//skip row if the article is the same, since there is a row by bid and the latest and highest bid is always the first to appear
@@ -455,7 +455,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
             			);
         		}
 
-				ArticlesVendus article = new ArticlesVendus(
+				ArticleVendu article = new ArticleVendu(
         				rs.getInt(1),
         				rs.getString(2),
         				rs.getString(3),
@@ -489,9 +489,9 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
                 			);
             		}
             		
-            		Encheres enchere = new Encheres(
-            				article.getNoArticle(),
-            				buyer.getNoUtilisateur(),
+            		Enchere enchere = new Enchere(
+            				article,
+            				buyer,
             				rs.getInt(12),
             				rs.getTimestamp(11).toLocalDateTime()
             		);
@@ -503,30 +503,6 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
     		}
     	}
     	return articles;
-	}
-
-	@Override
-	public void AddEnchere(int articleId, Encheres enchere) throws DALException {
-		try (Connection cnx = ConnectionProvider.getConnection()) {
-        	PreparedStatement pStmt = cnx.prepareStatement(INSERT_ENCHERE);
-        	pStmt.setInt(1, enchere.getutilisateur().getNoUtilisateur());
-        	pStmt.setInt(2, articleId);
-        	pStmt.setInt(3, enchere.getMontantEnchere());
-        
-        	pStmt.executeQuery();
-        	
-        	PreparedStatement pStmt2 = cnx.prepareStatement(UPDATE_PRICE);
-        	pStmt2.setInt(1, enchere.getMontantEnchere());
-        	pStmt2.setInt(2, articleId);
-        	pStmt2.executeQuery();
-		} catch (SQLException e) {
-			e.printStackTrace();
-        	DALException exception = new DALException();
-			exception.addError(e.getErrorCode());
-			throw exception;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -551,25 +527,6 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 			e.printStackTrace();
 		}
 		return price;
-	}
-
-	@Override
-	public void addRetrait(int articleId, Retraits retrait) throws DALException {
-		try (Connection cnx = ConnectionProvider.getConnection()) {
-        	PreparedStatement pStmt = cnx.prepareStatement(INSERT_ENCHERE);
-        	pStmt.setInt(1, articleId);
-        	pStmt.setString(2, retrait.getRue());
-        	pStmt.setString(3, retrait.getPostalCode());
-        	pStmt.setString(4, retrait.getCity());
-        
-        	pStmt.executeQuery();
-		} catch (SQLException e) {
-        	DALException exception = new DALException();
-			exception.addError(e.getErrorCode());
-			throw exception;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
 }

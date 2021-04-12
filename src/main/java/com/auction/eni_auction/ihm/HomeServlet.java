@@ -1,6 +1,6 @@
 package com.auction.eni_auction.ihm;
 
-import com.auction.eni_auction.bo.ArticlesVendus;
+import com.auction.eni_auction.bo.ArticleVendu;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;
 import com.auction.eni_auction.dal.jdbc.ArticleVenduJdbc;
@@ -25,7 +25,7 @@ public class HomeServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         ArticleVenduJdbc articleJdbc = new ArticleVenduJdbc();
-        List<ArticlesVendus> listArticles = new ArrayList<ArticlesVendus>();
+        List<ArticleVendu> listArticles = new ArrayList<ArticleVendu>();
         UtilisateurJdbc utilisateurJdbc = new UtilisateurJdbc();
         Utilisateur user = null;
         try {
@@ -38,7 +38,7 @@ public class HomeServlet extends HttpServlet {
         } catch (DALException e) {
             e.printStackTrace();
         }
-        for (ArticlesVendus v:listArticles) {
+        for (ArticleVendu v:listArticles) {
             System.out.println(v.getNoArticle());
         }
         request.setAttribute("articles", listArticles);

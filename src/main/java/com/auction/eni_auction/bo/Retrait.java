@@ -1,8 +1,8 @@
 package com.auction.eni_auction.bo;
 
-public class Retraits {
+public class Retrait {
 
-    private ArticlesVendus article;
+    private ArticleVendu article;
 
     private String rue;
 
@@ -10,7 +10,7 @@ public class Retraits {
 
     private String city;
 
-    public Retraits(ArticlesVendus article, String rue, String postalCode, String city) {
+    public Retrait(ArticleVendu article, String rue, String postalCode, String city) {
 		super();
 		this.article = article;
 		this.rue = rue;
@@ -18,11 +18,11 @@ public class Retraits {
 		this.city = city;
 	}
 
-	public ArticlesVendus getArticle() {
+	public ArticleVendu getArticle() {
         return article;
     }
 
-    public void setArticle(ArticlesVendus article) {
+    public void setArticle(ArticleVendu article) {
         this.article = article;
     }
 

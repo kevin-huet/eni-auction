@@ -1,7 +1,7 @@
 package com.auction.eni_auction.ihm;
 
-import com.auction.eni_auction.bo.ArticlesVendus;
-import com.auction.eni_auction.bo.Encheres;
+import com.auction.eni_auction.bo.ArticleVendu;
+import com.auction.eni_auction.bo.Enchere;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;
 import com.auction.eni_auction.dal.jdbc.ArticleVenduJdbc;
@@ -36,7 +36,7 @@ public class EnchereServlet extends HttpServlet {
         System.out.println(price+" "+articleId);
         ArticleVenduJdbc articleVenduJdbc = new ArticleVenduJdbc();
         EnchereJdbc enchereJdbc = new EnchereJdbc();
-        ArticlesVendus article = null;
+        ArticleVendu article = null;
         try {
             article = articleVenduJdbc.selectById(Integer.parseInt(articleId));
         } catch (DALException e) {
@@ -53,7 +53,7 @@ public class EnchereServlet extends HttpServlet {
         }
 
         assert test != null;
-        Encheres enchere = new Encheres(article.getNoArticle(), test.getNoUtilisateur(), Integer.parseInt(price), LocalDateTime.now());
+        Enchere enchere = new Enchere(article.getNoArticle(), test.getNoUtilisateur(), Integer.parseInt(price), LocalDateTime.now());
         enchere.setUtilisateur(test);
         enchere.setArticle(article);
         try {
