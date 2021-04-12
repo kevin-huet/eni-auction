@@ -29,59 +29,62 @@
 
         <c:if test="${sessionScope.user != null}">
         <h5 class="center">Mon Profil</h5>
-        <div class="col s6">
-            <div class="card">
-                <div class="card-image">
-                </div>
-                <div class="card-content">
-                    <p> Pseudo : ${sessionScope.user.getPseudo()} </p>
-                    <p> Nom : ${sessionScope.user.getNom()} </p>
-                    <p> Prenom : ${sessionScope.user.getPrenom()} </p>
-                    <p> Email : ${sessionScope.user.getEmail()} </p>
-                    <p> Credit : ${sessionScope.user.getCredit()} </p>
-
-                    <form class="" method="post" style="margin-top: 2em" action="<%=request.getContextPath()+"/login"%>">
-
-                        <div class="input-field col s12">
-                            <input  type="text" id="email" name="email" class="validate">
-                            <label for="email">Email</label>
-                        </div>
-                        <div class="input-field col s12">
-                            <input id="password" type="password" name="password" class="validate">
-                            <label for="password">Password</label>
-                        </div>
-
-                        <button class="btn">Valider</button>
-                    </form>
-                </div>
-                <div class="card-action">
-                </div>
-            </div>
-        </div>
-
-            <div class="col s6">
+            <div class="col s12">
                 <div class="card">
                     <div class="card-image">
                     </div>
-                    <div class="card-content">
-                        <form class="" method="post" style="margin-top: 2em" action="<%=request.getContextPath()+"/login"%>">
+                    <div class="card-content center">
+                        <form class="col s12 center" style="margin-top: 10em" method="post" action="<%=request.getContextPath()+"/profile"%>">
+                            <div class="row">
+                                <div class="input-field col s4" hidden>
+                                    <input value="${sessionScope["user"].noUtilisateur}" id="id" name="id" type="text" class="validate">
+                                    <label for="id">id</label>
+                                </div>
+                                <div class="input-field col s4">
+                                    <input value="${sessionScope["user"].pseudo}" id="pseudo" name="pseudo" type="text" class="validate">
+                                    <label for="pseudo">Pseudo</label>
+                                </div>
+                                <div class="input-field col s4">
+                                    <input value="${sessionScope["user"].nom}" id="nom" name="nom" type="text" class="validate">
+                                    <label for="nom">Last Name</label>
+                                </div>
+                                <div class="input-field col s4">
+                                    <input value="${sessionScope["user"].prenom}" id="prenom" name="prenom" type="text" class="validate">
+                                    <label for="prenom">Prenom</label>
+                                </div>
+                                <div class="input-field col s6">
+                                    <input value="${sessionScope["user"].email}" id="email" name="email" type="text" class="validate">
+                                    <label for="email">Email</label>
+                                </div>
+                                <div class="input-field col s6">
+                                    <input value="${sessionScope["user"].motDePasse}" id="password" name="password" type="password" class="validate">
+                                    <label for="password">password</label>
+                                </div>
+                                <div class="input-field col s3">
+                                    <input value="${sessionScope["user"].telephone}" id="telephone" name="telephone" type="text" class="validate">
+                                    <label for="telephone">Telephone</label>
+                                </div>
+                                <div class="input-field col s3">
+                                    <input value="${sessionScope["user"].rue}" id="rue" name="rue" type="text" class="validate">
+                                    <label for="rue">Rue</label>
+                                </div>
+                                <div class="input-field col s3">
+                                    <input value="${sessionScope["user"].codePostal}" id="codepostal" name="codepostal" type="text" class="validate">
+                                    <label for="codepostal">Code postal</label>
+                                </div>
+                                <div class="input-field col s3">
+                                    <input value="${sessionScope["user"].ville}" id="ville" name="ville" type="text" class="validate">
+                                    <label for="ville">Ville</label>
+                                </div>
 
-                            <div class="input-field col s12">
-                                <input  type="text" id="email" name="email" class="validate">
-                                <label for="email">Email</label>
                             </div>
-                            <div class="input-field col s12">
-                                <input id="password" type="password" name="password" class="validate">
-                                <label for="password">Password</label>
-                            </div>
-
                             <button class="btn">Valider</button>
-                        </form>
-                    </div>
+                        </form>                    </div>
                     <div class="card-action">
                     </div>
                 </div>
             </div>
+
 
             <div class="col s12">
                 <div class="card">

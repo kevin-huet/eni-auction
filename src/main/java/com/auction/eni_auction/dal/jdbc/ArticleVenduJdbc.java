@@ -30,6 +30,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 	private static final String INSERT_RETRAIT = "INSERT INTO RETRAITS (no_article, rue, code_postale, ville) VALUES (?, ?, ?, ?)";
 	private static final String ARTICLE_BUY = "SELECT art.no_article, art.nom_article, art.description, art.date_debut_encheres, art.date_fin_encheres, art.prix_initial, art.prix_vente, art.no_utilisateur, art.no_categorie,c.libelle,e.date_enchere,e.montant_enchere,e.no_utilisateur FROM ARTICLES_VENDUS art INNER JOIN CATEGORIES c ON art.no_categorie = c.no_categorie INNER JOIN ENCHERES e ON art.no_article = e.no_article INNER JOIN UTILISATEURS u ON art.no_utilisateur = u.no_utilisateur";
 	private static final String ARTICLE_SELL = "SELECT art.no_article, art.nom_article, art.description, art.date_debut_encheres, art.date_fin_encheres, art.prix_initial, art.prix_vente, art.no_utilisateur, art.no_categorie,c.libelle,e.date_enchere,e.montant_enchere,e.no_utilisateur FROM ARTICLES_VENDUS art INNER JOIN CATEGORIES c ON art.no_categorie = c.no_categorie LEFT JOIN ENCHERES e ON art.no_article = e.no_article INNER JOIN UTILISATEURS u ON art.no_utilisateur = u.no_utilisateur";
+	private static final String DELETE = "DELETE FROM ARTICLES_VENDUS WHERE no_article = ?";
 
 	public ArticleVendu insert(ArticleVendu var) throws DALException, SQLException {
 		try (Connection cnx = ConnectionProvider.getConnection()) {
@@ -127,19 +128,23 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
         					rs3.getBoolean("administrateur")
             			);
         		}
-        		
-        		Enchere enchere = new Enchere(
-        				article,
-        				buyer,
-        				rs.getInt(12),
-        				rs.getTimestamp(11).toLocalDateTime()
-        		);
-        		
-        		article.setEnchere(enchere);
-        		
-        		Retrait retrait = new Retrait(article, rs.getString(15), rs.getString(14), rs.getString(16));
-        		article.setRetrait(retrait);
-        		
+
+				if (rs.getInt(12) > 0) {
+					Enchere enchere = new Enchere(
+							article,
+							buyer,
+							rs.getInt(12),
+							rs.getTimestamp(11).toLocalDateTime()
+					);
+
+					article.setEnchere(enchere);
+				}
+
+
+				if (rs.getString(15) != null) {
+					Retrait retrait = new Retrait(article, rs.getString(15), rs.getString(14), rs.getString(16));
+					article.setRetrait(retrait);
+				}
         		first = false;
         	}
         	
@@ -271,8 +276,19 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 
 	@Override
 	public void delete(int id) throws DALException {
-		// TODO Auto-generated method stub
-		
+		try (Connection cnx = ConnectionProvider.getConnection()) {
+			PreparedStatement pStmt = cnx.prepareStatement(DELETE);
+			pStmt.setInt(1, id);
+
+			pStmt.executeQuery();
+
+		} catch (SQLException e) {
+			DALException exception = new DALException();
+			exception.addError(e.getErrorCode());
+			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

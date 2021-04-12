@@ -24,6 +24,7 @@ public class ArticleServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String articleId = (request.getParameter("id"));
+        String alert = request.getParameter("alert");
         ArticleVenduJdbc articleVenduJdbc = new ArticleVenduJdbc();
         ArticleVendu article = null;
         try {
@@ -31,10 +32,15 @@ public class ArticleServlet extends HttpServlet {
         } catch (DALException e) {
             e.printStackTrace();
         }
+        if (alert != null && alert.equals("error_user")) {
+            request.setAttribute("error", "Vous devez être connecté pour effectuer une enchère");
+        } else if (alert != null && alert.equals("success")) {
+            request.setAttribute("success", "Votre enchère à bien été prise en compte");
+        }
         request.setAttribute("derniereEnchere", article.getEnchere());
         request.setAttribute("article", article);
         System.out.println(article.getEnchere().getUtilisateur().getPseudo());
-        this.getServletContext().getRequestDispatcher( "/article.jsp" ).forward( request, response );
+        this.getServletContext().getRequestDispatcher( "/show_article.jsp" ).forward( request, response );
 
     }
 

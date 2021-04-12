@@ -43,7 +43,7 @@
                             <span class="card-title">Créer un article</span>
                         </div>
                         <div class="card-content">
-                            <form method="post" action="<%=request.getContextPath()+"/enchere?id="%>${requestScope['article'].getNoArticle()}">
+                            <form method="post" action="<%=request.getContextPath()+"/article/create"%>${requestScope['article'].getNoArticle()}">
                                 <div class="input-field">
                                     <input name="nom" id="nom" type="text" class="validate">
                                     <label for="nom">Nom</label>
@@ -63,7 +63,9 @@
                                 <div class="input-field col s12">
                                     <select name="cat" id="cat">
                                         <option value="" disabled selected>Choisissez une catégorie</option>
-                                        <option value="1">Option 1</option>
+                                        <c:forEach items="${requestScope['categories']}" var="category">
+                                            <option value="${category.noCategorie}">${category.libelle}</option>
+                                        </c:forEach>
 
                                     </select>
                                     <label for="cat">Catégorie</label>
@@ -93,6 +95,7 @@
     $(document).ready(function(){
         $('.sidenav').sidenav();
         $('.parallax').parallax();
+        $('select').formSelect();
 
     });
 

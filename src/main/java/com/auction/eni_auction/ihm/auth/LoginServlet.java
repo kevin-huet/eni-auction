@@ -62,7 +62,7 @@ public class LoginServlet extends HttpServlet {
             System.out.println("value null");
             session.setAttribute("sessionUtilisateur", null);
         }
-        this.getServletContext().getRequestDispatcher("/home.jsp").forward( request, response );
+        response.sendRedirect( request.getContextPath() + "/");
     }
 
     public void destroy() {

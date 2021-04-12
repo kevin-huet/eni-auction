@@ -125,9 +125,7 @@ public class EnchereJdbc implements EnchereDAO {
         		);
         		
         		article.setEnchere(enchere);
-        		
-        		Retrait retrait = new Retrait(article, rs.getString(15), rs.getString(14), rs.getString(16));
-        		article.setRetrait(retrait);
+
         	}
         	
 		} catch (SQLException e) {

@@ -138,11 +138,14 @@ public class UtilisateurJdbc implements UtilisateurDAO {
 			pStmt.setString(7, var.getCodePostal());
 			pStmt.setString(8, var.getVille());
 			pStmt.setString(9, var.getMotDePasse());
+			pStmt.setInt(10, var.getCredit());
 			pStmt.setBoolean(11, var.isAdministrateur());
-			
+			System.out.println("update user");
+
 			pStmt.executeQuery();
 			
     	} catch (SQLException e) {
+    		e.printStackTrace();
     		DALException exception = new DALException();
 			exception.addError(e.getErrorCode());
 			throw exception;

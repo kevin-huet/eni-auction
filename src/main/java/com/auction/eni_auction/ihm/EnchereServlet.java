@@ -20,7 +20,7 @@ public class EnchereServlet extends HttpServlet {
     private String message;
     public static final String PRICE = "price";
     public static final String ARTICLE_ID = "articleId";
-    public static final String VUE = "/article.jsp";
+    public static final String VUE = "/show_article.jsp";
 
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -37,36 +37,35 @@ public class EnchereServlet extends HttpServlet {
         ArticleVenduJdbc articleVenduJdbc = new ArticleVenduJdbc();
         EnchereJdbc enchereJdbc = new EnchereJdbc();
         ArticleVendu article = null;
-        try {
-            article = articleVenduJdbc.selectById(Integer.parseInt(articleId));
-        } catch (DALException e) {
-            e.printStackTrace();
-        }
-        assert article != null;
-
         UtilisateurJdbc utilisateurJdbc = new UtilisateurJdbc();
-        Utilisateur test = null;
-        try {
-            test = utilisateurJdbc.selectById(2);
-        } catch (DALException e) {
-            e.printStackTrace();
-        }
+        Utilisateur user = (request.getSession().getAttribute("user") != null) ? (Utilisateur) request.getSession().getAttribute("user") : null;
 
-        assert test != null;
-        Enchere enchere = new Enchere(article.getNoArticle(), test.getNoUtilisateur(), Integer.parseInt(price), LocalDateTime.now());
-        enchere.setUtilisateur(test);
-        enchere.setArticle(article);
-        try {
-            if (enchereJdbc.selectById(article.getNoArticle(), test.getNoUtilisateur()) == null)
-                enchereJdbc.insert(enchere);
-            else
-                enchereJdbc.update(enchere);
-        } catch (DALException | SQLException e) {
-            e.printStackTrace();
+        if (user == null) {
+            response.sendRedirect( request.getContextPath() + "/article?alert=error_user&id="+articleId);
+        } else {
+
+            try {
+                article = articleVenduJdbc.selectById(Integer.parseInt(articleId));
+            } catch (DALException e) {
+                e.printStackTrace();
+            }
+            assert article != null;
+
+            Enchere enchere = new Enchere(article, user, Integer.parseInt(price), LocalDateTime.now());
+            enchere.setUtilisateur(user);
+            enchere.setArticle(article);
+            try {
+                assert user != null;
+                if (enchereJdbc.selectById(article.getNoArticle(), user.getNoUtilisateur()) == null)
+                    enchereJdbc.insert(enchere);
+                else
+                    enchereJdbc.update(enchere);
+            } catch (DALException | SQLException e) {
+                e.printStackTrace();
+            }
+            request.setAttribute("sucess", "Votre enchère a bien été ajoutée");
+            response.sendRedirect(request.getContextPath() + "/article?alert=success&id=" + articleId);
         }
-        request.setAttribute("article", article);
-        request.setAttribute("sucess", "Votre enchère a bien été ajoutée");
-        this.getServletContext().getRequestDispatcher( VUE ).forward( request, response );
     }
     public void destroy() {
 
