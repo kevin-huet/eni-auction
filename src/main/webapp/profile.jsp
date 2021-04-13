@@ -7,7 +7,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <head>
-    <title>Auction - Accueil</title>
+    <title>Auction - Profil</title>
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -31,12 +31,10 @@
         <h5 class="center">Mon Profil</h5>
             <div class="col s12">
                 <div class="card">
-                    <div class="card-image">
-                    </div>
-                    <div class="card-content center">
                         <form class="col s12 center" style="margin-top: 10em" method="post" action="<%=request.getContextPath()+"/profile"%>">
-                            <div class="row">
-                                <div class="input-field col s4" hidden>
+                            <p>Credits : ${sessionScope["user"].credit}</p>
+
+                            <div class="input-field col s4" hidden>
                                     <input value="${sessionScope["user"].noUtilisateur}" id="id" name="id" type="text" class="validate">
                                     <label for="id">id</label>
                                 </div>
@@ -77,11 +75,9 @@
                                     <label for="ville">Ville</label>
                                 </div>
 
-                            </div>
                             <button class="btn">Valider</button>
-                        </form>                    </div>
-                    <div class="card-action">
-                    </div>
+                        </form>
+
                 </div>
             </div>
 
@@ -91,7 +87,7 @@
                     <div class="card-image">
                     </div>
                     <div class="card-content center">
-                        <a href="" class="btn red">Supprimer mon compte</a>
+                        <a href="<%=request.getContextPath()+"/delete"%>" class="btn red">Supprimer mon compte</a>
                     </div>
                     <div class="card-action">
                     </div>

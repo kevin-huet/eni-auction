@@ -28,7 +28,7 @@
 </div>
 <div class="section white">
     <div class="row container">
-        <h2 class="header">Liste des dernirèes enchères </h2>
+        <h2 class="header">Liste des enchères </h2>
         <p class="grey-text text-darken-3 lighten-3">
         </p>
 
@@ -36,8 +36,27 @@
 
 
 
-            <c:set var="i" value="0" />
-            <c:forEach items="${requestScope['articles']}" var="articlesVendus">
+            <div class="col s12">
+                <div class="card">
+                        <form>
+                            <div class="input-field col s8">
+                                <input  id="search" type="search" class="validate">
+                                <label class="active" for="search">Rechercher</label>
+                            </div>
+                            <div class="input-field col s4">
+                                <select name="cat" id="cat">
+                                    <option value="" disabled selected>Choisissez une catégorie</option>
+                                    <c:forEach items="${requestScope['categories']}" var="category">
+                                        <option value="${category.noCategorie}">${category.libelle}</option>
+                                    </c:forEach>
+                                </select>
+                                <label for="cat">Catégorie</label>
+                            </div>
+                            <a class="btn" href="">Rechercher</a>
+
+                        </form>
+                </div>
+            </div>            <c:forEach items="${requestScope['articles']}" var="articlesVendus">
 
             <div class="col s3">
                 <div class="card">
@@ -53,7 +72,6 @@
                     </div>
                 </div>
             </div>
-                <c:set var="i" value="${i+1}" />
             </c:forEach>
 
 
@@ -71,6 +89,7 @@
     $(document).ready(function(){
         $('.sidenav').sidenav();
         $('.parallax').parallax();
+        $('select').formSelect();
 
     });
 

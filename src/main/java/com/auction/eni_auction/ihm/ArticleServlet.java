@@ -39,7 +39,6 @@ public class ArticleServlet extends HttpServlet {
         }
         request.setAttribute("derniereEnchere", article.getEnchere());
         request.setAttribute("article", article);
-        System.out.println(article.getEnchere().getUtilisateur().getPseudo());
         this.getServletContext().getRequestDispatcher( "/show_article.jsp" ).forward( request, response );
 
     }

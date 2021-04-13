@@ -61,7 +61,7 @@
             <button class="btn">Valider</button>
         </form>
         <div class="col s12 center">
-            <a class="btn-large"> Pas de compte ? S'inscrire</a>
+            <a style="margin-top: 2em" class="btn-large" href="<%=request.getContextPath()+"/register"%>"> Pas de compte ? S'inscrire</a>
         </div>
     </div>
 </div>

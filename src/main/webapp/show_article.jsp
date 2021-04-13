@@ -7,7 +7,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <head>
-    <title>JSP - Hello World</title>
+    <title>Auction - Article</title>
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -70,7 +70,7 @@
 
             <c:set var="i" value="0" />
 
-            <div class="col s12">
+            <div class="col s7">
                 <div class="card">
                     <div class="card-image">
                         <img src="https://i.pinimg.com/originals/c0/83/7a/c0837a3f2855c632be8dbde4b7eeccba.jpg">
@@ -91,7 +91,7 @@
                         </form>
                     </div>
                     <div class="card-action">
-                        <p>Dernieres encheres de ${requestScope['derniereEnchere'].utilisateur.getNom()}: ${requestScope['derniereEnchere'].montantEnchere}</p>
+                        <p>Dernieres encheres de ${requestScope['derniereEnchere'].utilisateur.getPseudo()}: ${requestScope['derniereEnchere'].montantEnchere}</p>
                     </div>
                 </div>
             </div>

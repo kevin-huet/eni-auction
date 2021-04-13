@@ -1,9 +1,11 @@
 package com.auction.eni_auction.ihm;
 
 import com.auction.eni_auction.bo.ArticleVendu;
+import com.auction.eni_auction.bo.Categorie;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;
 import com.auction.eni_auction.dal.jdbc.ArticleVenduJdbc;
+import com.auction.eni_auction.dal.jdbc.CategorieJdbc;
 import com.auction.eni_auction.dal.jdbc.UtilisateurJdbc;
 
 import javax.servlet.ServletException;
@@ -26,7 +28,9 @@ public class HomeServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         ArticleVenduJdbc articleJdbc = new ArticleVenduJdbc();
         List<ArticleVendu> listArticles = new ArrayList<ArticleVendu>();
+        List<Categorie> listCategories = new ArrayList<>();
         UtilisateurJdbc utilisateurJdbc = new UtilisateurJdbc();
+        CategorieJdbc categorieJdbc = new CategorieJdbc();
         Utilisateur user = null;
         try {
             user = utilisateurJdbc.selectById(1);
@@ -34,7 +38,8 @@ public class HomeServlet extends HttpServlet {
             e.printStackTrace();
         }
         try {
-            listArticles = articleJdbc.filterSell("", 0, "ouvert", user);
+            listArticles = articleJdbc.filterSell("", 0, "en cours", user);
+            listCategories = categorieJdbc.selectAll();
         } catch (DALException e) {
             e.printStackTrace();
         }
@@ -42,7 +47,7 @@ public class HomeServlet extends HttpServlet {
             System.out.println(v.getNoArticle());
         }
         request.setAttribute("articles", listArticles);
-
+        request.setAttribute("categories", listCategories);
         this.getServletContext().getRequestDispatcher( "/home.jsp" ).forward( request, response );
     }
 

@@ -49,4 +49,8 @@ public class CategorieServlet extends HttpServlet {
         response.sendRedirect( request.getContextPath() + "/category");
     }
 
+    private boolean checkPermission(Utilisateur utilisateur) {
+        return utilisateur.isAdministrateur();
+    }
+
 }

@@ -39,27 +39,14 @@ public class LoginServlet extends HttpServlet {
                 e.printStackTrace();
             }
             if (user != null) {
-                session.setAttribute("Pseudo", user.getPseudo());
-                session.setAttribute("Nom", user.getNom());
-                session.setAttribute("Prenom", user.getPrenom());
-                session.setAttribute("Mail", user.getEmail());
-                session.setAttribute("Telephone", user.getTelephone());
-                session.setAttribute("Rue", user.getRue());
-                session.setAttribute("Cp", user.getCodePostal());
-                session.setAttribute("Ville", user.getVille());
-                session.setAttribute("Credit", user.getCredit());
-                session.setAttribute("numUtil", user.getNoUtilisateur());
                 session.setAttribute("user", user);
             } else {
-                System.out.println("login error");
                 request.setAttribute("error", "Mot de passe ou identifiant incorrect");
                 session.setAttribute("user", null);
-
                 doGet(request, response);
 
             }
         } else {
-            System.out.println("value null");
             session.setAttribute("sessionUtilisateur", null);
         }
         response.sendRedirect( request.getContextPath() + "/");

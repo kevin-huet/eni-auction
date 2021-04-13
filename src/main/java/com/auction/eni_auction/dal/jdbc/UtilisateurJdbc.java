@@ -138,9 +138,9 @@ public class UtilisateurJdbc implements UtilisateurDAO {
 			pStmt.setString(7, var.getCodePostal());
 			pStmt.setString(8, var.getVille());
 			pStmt.setString(9, var.getMotDePasse());
-			pStmt.setInt(10, var.getCredit());
-			pStmt.setBoolean(11, var.isAdministrateur());
-			System.out.println("update user");
+			pStmt.setBoolean(10, var.isAdministrateur());
+			pStmt.setInt(11, var.getNoUtilisateur());
+			System.out.println("update user "+var.getNoUtilisateur());
 
 			pStmt.executeQuery();
 			

@@ -8,23 +8,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-/**
- * Servlet implementation class ServDeconnecter
- * @author jbodet2019
- */
+
 @WebServlet(name = "logoutServlet", value = "/logout")
 public class LogoutServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        /* Récupération et destruction de la session en cours */
         HttpSession session = request.getSession();
         session.setAttribute("user", null);
 
         session.invalidate();
-
-        /* Redirection vers la page de connexion */
-        this.getServletContext().getRequestDispatcher( "/home.jsp" ).forward( request, response );    }
+        this.getServletContext().getRequestDispatcher( "/home.jsp" ).forward( request, response );
+    }
 
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

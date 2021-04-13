@@ -10,7 +10,6 @@ public class JdbcTools {
     private static String userdb;
     private static String passworddb;
 
-    //bloc d'initialisation statique
     static {
         try {
             Class.forName("org.mariadb.jdbc.Driver");

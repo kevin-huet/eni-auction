@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(name = "profileServlet", value = "/profile/*")
@@ -44,11 +45,11 @@ public class ProfileServlet extends HttpServlet {
         String rue = request.getParameter("rue");
         String ville = request.getParameter("ville");
         String id = request.getParameter("id");
-
         Utilisateur user = null;
-
+        HttpSession session = request.getSession();
         try {
-            user = utilisateurJdbc.selectById(Integer.parseInt(id));
+            if (session.getAttribute("user") != null)
+                user = (Utilisateur) session.getAttribute("user");
             if (user != null) {
                 user.setNom(nom);
                 user.setPrenom(prenom);
@@ -60,6 +61,7 @@ public class ProfileServlet extends HttpServlet {
                 user.setRue(rue);
                 user.setVille(ville);
                 utilisateurJdbc.update(user);
+
             }
         } catch (DALException e) {
             e.printStackTrace();
