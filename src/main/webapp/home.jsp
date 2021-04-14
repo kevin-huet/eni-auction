@@ -52,13 +52,67 @@
                                 </select>
                                 <label for="cat">Catégorie</label>
                             </div>
-                            <button class="btn" type="submit">Rechercher</button>
+                            <c:if test="${sessionScope.user != null}">
 
+                            <div class="input-field col s6">
+                                <p>
+                                    <label>
+                                        <input id="buy_radio" name="buy" type="radio" checked />
+                                        <span>Achats</span>
+                                    </label>
+                                </p>
+                                <p>
+                                    <label>
+                                        <input name="open_auction" type="checkbox" class="buy" />
+                                        <span>Enchères ouvertes</span>
+                                    </label>
+                                </p>
+                                <p>
+                                    <label>
+                                        <input name="actual_auction" type="checkbox" class="buy" />
+                                        <span>Mes enchères en cours</span>
+                                    </label>
+                                </p>
+                                <p>
+                                    <label>
+                                        <input name="win_auction" type="checkbox" class="buy" />
+                                        <span>Mes enchères remportées</span>
+                                    </label>
+                                </p>
+                            </div>
+                            <div class="input-field col s6">
+                                <p>
+                                    <label>
+                                        <input id="sell_radio" name="sell" type="radio"/>
+                                        <span>Mes ventes</span>
+                                    </label>
+                                </p>
+                                <p>
+                                    <label>
+                                        <input name="my_sales" class="sell" type="checkbox" disabled />
+                                        <span>Mes ventes en cours</span>
+                                    </label>
+                                </p>
+                                <p>
+                                    <label>
+                                        <input name="not_started_sales" class="sell" type="checkbox" disabled />
+                                        <span>Ventes non débutées</span>
+                                    </label>
+                                </p>
+                                <p>
+                                    <label>
+                                        <input name="sales_over" class="sell" type="checkbox" disabled/>
+                                        <span>Ventes terminées</span>
+                                    </label>
+                                </p>
+                            </div>
+                            </c:if>
+                            <div class="center"><button class="btn" type="submit">Rechercher</button></div>
                         </form>
                 </div>
-            </div>            <c:forEach items="${requestScope['articles']}" var="articlesVendus">
-
-            <div class="col s3">
+            </div>
+            <c:forEach items="${requestScope['articles']}" var="articlesVendus">
+            <div class="col s12 m6 l4">
                 <div class="card">
                     <div class="card-image">
                         <img src="https://i.pinimg.com/originals/c0/83/7a/c0837a3f2855c632be8dbde4b7eeccba.jpg">
@@ -90,6 +144,34 @@
         $('.sidenav').sidenav();
         $('.parallax').parallax();
         $('select').formSelect();
+
+        let checkboxBuy = $('.buy');
+        let checkboxSell = $('.sell');
+        $('#buy_radio').change(function() {
+            if(this.checked) {
+                $('#sell_radio').prop('checked', false);
+                checkboxSell.each(function() {
+                    $(this).prop('checked', false);
+                    $(this).prop('disabled', true);
+                });
+                checkboxBuy.each(function() {
+                    $(this).prop('disabled', false);
+                });
+            }
+        });
+        $('#sell_radio').change(function() {
+            if(this.checked) {
+                $('#buy_radio').prop('checked', false);
+
+                checkboxBuy.each(function() {
+                    $(this).prop('checked', false);
+                    $(this).prop('disabled', true);
+                });
+                checkboxSell.each(function() {
+                    $(this).prop('disabled', false);
+                });
+            }
+        });
 
     });
 

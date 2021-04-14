@@ -4,8 +4,7 @@ import com.auction.eni_auction.bo.ArticleVendu;
 import com.auction.eni_auction.bo.Categorie;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;
-import com.auction.eni_auction.dal.jdbc.ArticleVenduJdbc;
-import com.auction.eni_auction.dal.jdbc.CategorieJdbc;
+import com.auction.eni_auction.dal.DAOFactory;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -14,11 +13,10 @@ import java.util.List;
 
 public class ArticleVenduManager {
 
-    private static ArticleVenduJdbc articleVenduJdbc = null;
     private static ArticleVenduManager instance = null;
 
     public ArticleVenduManager() {
-        articleVenduJdbc = new ArticleVenduJdbc();
+    	
     }
 
     public static ArticleVenduManager getInstance() {
@@ -34,7 +32,7 @@ public class ArticleVenduManager {
         try {
             categorie = CategorieManager.getInstance().getCategorie(Integer.parseInt(category));
             if (categorie != null)
-                return articleVenduJdbc.insert(new ArticleVendu(nom, description, LocalDate.now(),
+                return DAOFactory.getArticleDAO().insert(new ArticleVendu(nom, description, LocalDate.now(),
                         endAuction, Integer.parseInt(price), 0, utilisateur, categorie));
         } catch (DALException | NumberFormatException | SQLException e) {
             e.printStackTrace();
@@ -48,7 +46,7 @@ public class ArticleVenduManager {
 
     public ArticleVendu removedArticle(ArticleVendu articleVendu) {
         try {
-           articleVenduJdbc.delete(articleVendu.getNoArticle());
+        	DAOFactory.getArticleDAO().delete(articleVendu.getNoArticle());
            return articleVendu;
         } catch (DALException e) {
             e.printStackTrace();
@@ -58,7 +56,7 @@ public class ArticleVenduManager {
 
     public ArticleVendu getArticle(String articleId) {
         try {
-            return articleVenduJdbc.selectById(Integer.parseInt(articleId));
+            return DAOFactory.getArticleDAO().selectById(Integer.parseInt(articleId));
         } catch (DALException | NumberFormatException e) {
             e.printStackTrace();
         }
@@ -67,7 +65,7 @@ public class ArticleVenduManager {
 
     public List<ArticleVendu> getBaseArticle(String cat, String search) {
         try {
-            return articleVenduJdbc.filterBase(
+            return DAOFactory.getArticleDAO().filterBase(
                     (search != null && !search.equals("null")) ? search : "",
                     (cat != null && !cat.equals("null")) ? Integer.parseInt(cat) : 0
             );
@@ -77,12 +75,27 @@ public class ArticleVenduManager {
         return new ArrayList<ArticleVendu>();
     }
 
-    public List<ArticleVendu> getBuyArticle(String cat, String search, Utilisateur user) {
+    public List<ArticleVendu> getBuyArticle(String cat, String search, Utilisateur user, String status) {
         try {
-            return articleVenduJdbc.filterBuy(
+            return DAOFactory.getArticleDAO().filterBuy(
                     (search != null && !search.equals("null")) ? search : "",
                     (cat != null && !cat.equals("null")) ? Integer.parseInt(cat) : 0,
-                    "ouvert", user
+                    status,
+                    user
+            );
+        } catch (DALException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<ArticleVendu>();
+    }
+
+    public List<ArticleVendu> getSellArticle(String cat, String search, Utilisateur user, String status) {
+        try {
+            return DAOFactory.getArticleDAO().filterSell(
+                    (search != null && !search.equals("null")) ? search : "",
+                    (cat != null && !cat.equals("null")) ? Integer.parseInt(cat) : 0,
+                    status,
+                    user
             );
         } catch (DALException | NumberFormatException e) {
             e.printStackTrace();

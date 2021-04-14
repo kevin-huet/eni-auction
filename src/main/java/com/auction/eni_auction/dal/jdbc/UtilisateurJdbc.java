@@ -23,6 +23,7 @@ public class UtilisateurJdbc implements UtilisateurDAO {
     private static final String DELETE_ONE = "DELETE FROM UTILISATEURS WHERE no_utilisateur = ?";
     private static final String UPDATE_CREDIT = "UPDATE UTILISATEURS SET credit = ? WHERE no_utilisateur = ?";
     private static final String SELECT_CREDIT = "SELECT credit FROM UTILISATEURS WHERE no_utilisateur = ?";
+	private static final String SELECT_BY_USERNAME_AND_MAIL = "SELECT no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur FROM UTILISATEURS WHERE pseudo = ? OR  email = ?";
 	@Override
     public Utilisateur insert(Utilisateur var) throws DALException, SQLException {
 		try (Connection cnx = ConnectionProvider.getConnection()) {
@@ -172,7 +173,38 @@ public class UtilisateurJdbc implements UtilisateurDAO {
 
     @Override
     public boolean checkForUniquePseudoAndMail(String pseudo, String mail) throws DALException {
-        return false;
+		Utilisateur utilisateur = null;
+		try (Connection cnx = ConnectionProvider.getConnection()) {
+			PreparedStatement pStmt = cnx.prepareStatement(SELECT_BY_USERNAME_AND_MAIL);
+			pStmt.setString(1, pseudo);
+			pStmt.setString(2, mail);
+			ResultSet rs = pStmt.executeQuery();
+
+			while (rs.next()) {
+				utilisateur = new Utilisateur(
+						rs.getInt("no_utilisateur"),
+						rs.getString("pseudo"),
+						rs.getString("nom"),
+						rs.getString("prenom"),
+						rs.getString("email"),
+						rs.getString("telephone"),
+						rs.getString("rue"),
+						rs.getString("code_postal"),
+						rs.getString("ville"),
+						rs.getString("mot_de_passe"),
+						rs.getInt("credit"),
+						rs.getBoolean("administrateur")
+				);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			DALException exception = new DALException();
+			exception.addError(e.getErrorCode());
+			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return utilisateur != null;
     }
 
     @Override

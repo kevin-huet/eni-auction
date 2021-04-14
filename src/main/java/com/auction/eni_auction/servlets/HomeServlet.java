@@ -28,13 +28,20 @@ public class HomeServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String cat = request.getParameter("cat");
         String search = request.getParameter("search");
-        System.out.println(cat+ " " + search);
+        String status = request.getParameter("status");
+        String sell = request.getParameter("sell");
+        String buy = request.getParameter("buy");
+
         if (session.getAttribute("user") != null)
             user = (Utilisateur) session.getAttribute("user");
         if (user == null)
             listArticles = ArticleVenduManager.getInstance().getBaseArticle(cat, search);
+        else if (buy != null && buy.equals("on"))
+            listArticles = ArticleVenduManager.getInstance().getBuyArticle(cat, search, user, (status == null) ? "ouvert" : status);
+        else if (sell != null && sell.equals("on"))
+            listArticles = ArticleVenduManager.getInstance().getSellArticle(cat, search, user, (status == null) ? "ouvert" : status);
         else
-            listArticles = ArticleVenduManager.getInstance().getBuyArticle(cat, search, user);
+            listArticles = ArticleVenduManager.getInstance().getBuyArticle(cat, search, user, "ouvert");
         listCategories = CategorieManager.getInstance().getAllCategories();
         request.setAttribute("articles", listArticles);
         request.setAttribute("categories", listCategories);
@@ -44,10 +51,47 @@ public class HomeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String cat = request.getParameter("cat");
         String search = request.getParameter("search");
-        response.sendRedirect( request.getContextPath() + "/?cat="+cat+"&search="+search);
+        String sell = request.getParameter("sell");
+        String buy = request.getParameter("buy");
+        String openAuction = request.getParameter("open_auction");
+        String actualAuction = request.getParameter("actual_auction");
+        String winAuction = request.getParameter("win_auction");
+        String mySales = request.getParameter("my_sales");
+        String notStartedSales  = request.getParameter("not_started_sales");
+        String salesOver  = request.getParameter("sales_over");
+        String status;
+        HttpSession session = request.getSession();
+
+        System.out.println("buy : "+buy+" --- sell : "+sell);
+        if (session.getAttribute("user") != null && buy != null && !buy.equals("null")) {
+            status = getStatusBuy(openAuction, actualAuction, winAuction);
+            response.sendRedirect(request.getContextPath()+"/?cat="+cat+"&search="+search+"&buy="+buy+"&status="+status);
+        } else if (session.getAttribute("user") != null && sell != null && !sell.equals("null")) {
+            status = getStatusSell(mySales, notStartedSales, salesOver);
+            response.sendRedirect( request.getContextPath() + "/?cat="+cat+"&search="+search+"&sell="+sell+"&status="+status);
+        } else
+            response.sendRedirect( request.getContextPath() + "/?cat="+cat+"&search="+search);
     }
 
-    public void destroy() {
+    private String getStatusBuy(String openAuction, String actualAuction, String winAuction) {
+        if (actualAuction != null && actualAuction.equals("on")) {
+            return "en cours";
+        } else if (openAuction != null && openAuction.equals("on")) {
+            return "ouvert";
+        } else if (winAuction != null && winAuction.equals("on")) {
+            return "finis";
+        }
+        return "ouvert";
+    }
 
+    private String getStatusSell(String mySales, String notStartedSales, String salesOver) {
+        if (mySales != null && mySales.equals("on")) {
+            return "ouvert";
+        } else if (notStartedSales != null && notStartedSales.equals("on")) {
+            return "non débuté";
+        } else if (salesOver != null && salesOver.equals("on")) {
+            return "finis";
+        }
+        return "ouvert";
     }
 }

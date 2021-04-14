@@ -39,7 +39,7 @@ public class RegisterServlet extends HttpServlet {
         String ville = request.getParameter("ville");
         Utilisateur user = new Utilisateur(pseudo, nom, prenom, email, telephone, rue, codepostal, ville, password, 0, false);
 
-        if (UtilisateurManager.getInstance().checkIfUserExist(pseudo, email)) {
+        if (!UtilisateurManager.getInstance().checkIfUserExist(pseudo, email)) {
             UtilisateurManager.getInstance().addUtilisateur(user);
             response.sendRedirect( request.getContextPath() + "/login?alert=register");
         } else
@@ -48,4 +48,6 @@ public class RegisterServlet extends HttpServlet {
 
     public void destroy() {
     }
+
+
 }
