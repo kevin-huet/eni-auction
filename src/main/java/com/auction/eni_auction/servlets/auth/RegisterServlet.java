@@ -1,4 +1,4 @@
-package com.auction.eni_auction.ihm.auth;
+package com.auction.eni_auction.servlets.auth;
 
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;

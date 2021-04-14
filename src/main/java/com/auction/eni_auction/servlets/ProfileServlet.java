@@ -1,5 +1,6 @@
-package com.auction.eni_auction.ihm;
+package com.auction.eni_auction.servlets;
 
+import com.auction.eni_auction.bll.UtilisateurManager;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;
 import com.auction.eni_auction.dal.jdbc.UtilisateurJdbc;
@@ -17,14 +18,8 @@ public class ProfileServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String idUser = (request.getParameter("id"));
-        UtilisateurJdbc utilisateurJdbc = new UtilisateurJdbc();
-        Utilisateur user = null;
+        Utilisateur user = UtilisateurManager.getInstance().getUtilisateur(idUser);
 
-        try {
-            user = utilisateurJdbc.selectById(Integer.parseInt(idUser));
-        } catch (DALException e) {
-            e.printStackTrace();
-        }
         if (user == null) {
 
         } else if (user != null && user == request.getSession().getAttribute("user"))
@@ -34,7 +29,6 @@ public class ProfileServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        UtilisateurJdbc utilisateurJdbc = new UtilisateurJdbc();
         String nom = request.getParameter("nom");
         String pseudo = request.getParameter("pseudo");
         String prenom = request.getParameter("prenom");
@@ -47,25 +41,26 @@ public class ProfileServlet extends HttpServlet {
         String id = request.getParameter("id");
         Utilisateur user = null;
         HttpSession session = request.getSession();
-        try {
-            if (session.getAttribute("user") != null)
-                user = (Utilisateur) session.getAttribute("user");
-            if (user != null) {
-                user.setNom(nom);
-                user.setPrenom(prenom);
-                user.setPseudo(pseudo);
-                user.setEmail(email);
-                user.setMotDePasse(password);
-                user.setCodePostal(codepostal);
-                user.setTelephone(telephone);
-                user.setRue(rue);
-                user.setVille(ville);
-                utilisateurJdbc.update(user);
 
-            }
-        } catch (DALException e) {
-            e.printStackTrace();
+        if (session.getAttribute("user") != null)
+            user = (Utilisateur) session.getAttribute("user");
+        if (user != null) {
+            updateUserValue(user, nom, prenom, pseudo, email, password, codepostal, telephone, rue, ville);
         }
         response.sendRedirect(request.getContextPath()+"/profile?alert=success&id="+id);
+    }
+
+    private void updateUserValue(Utilisateur user, String nom, String prenom, String pseudo, String email,
+                                 String password, String codepostal, String telephone, String rue, String ville) {
+        user.setNom(nom);
+        user.setPrenom(prenom);
+        user.setPseudo(pseudo);
+        user.setEmail(email);
+        user.setMotDePasse(password);
+        user.setCodePostal(codepostal);
+        user.setTelephone(telephone);
+        user.setRue(rue);
+        user.setVille(ville);
+        UtilisateurManager.getInstance().update(user);
     }
 }

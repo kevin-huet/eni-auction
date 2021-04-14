@@ -1,4 +1,4 @@
-package com.auction.eni_auction.ihm.auth;
+package com.auction.eni_auction.servlets.auth;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -18,7 +18,7 @@ public class LogoutServlet extends HttpServlet {
         session.setAttribute("user", null);
 
         session.invalidate();
-        this.getServletContext().getRequestDispatcher( "/home.jsp" ).forward( request, response );
+        response.sendRedirect( request.getContextPath() + "/");
     }
 
 

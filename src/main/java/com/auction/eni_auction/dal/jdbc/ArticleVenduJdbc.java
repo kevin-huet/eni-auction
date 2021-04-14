@@ -303,7 +303,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 			statement.append(SELECT_BASE);
 			statement.append(" WHERE art.date_fin_encheres >= CURDATE() AND art.date_debut_encheres <= CURDATE()");
 			if(!name.equals("")) {
-				statement.append(" AND art.nom_article LIKE '%?%'");
+				statement.append(" AND art.nom_article LIKE ?");
 			}
 			if (categorieId != 0) {
 				statement.append(" AND art.no_categorie = ?");
@@ -313,7 +313,8 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 			PreparedStatement pStmt = cnx.prepareStatement(statement.toString());
 			int index = 1;
 			if(!name.equals("")) {
-				pStmt.setString(index, name);
+				name = name.toUpperCase();
+				pStmt.setString(index, "%" + name + "%");
 				index++;
 			}
 			if (categorieId != 0) {
@@ -346,9 +347,10 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 			} else {
 				statement.append(SELECT_BASE);
 			}
+			statement.append(" WHERE art.no_utilisateur <> ?");
 			int index = 1;
 			if(!name.equals("")) {
-				statement.append(" WHERE art.nom_article LIKE '%?%'");
+				statement.append(" WHERE art.nom_article LIKE ?");
 			}
 			if (categorieId != 0) {
 				statement.append(" AND art.no_categorie = ?");
@@ -358,12 +360,15 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 			} else if (state.equals("en cours")) {
 				statement.append(" AND art.date_fin_encheres > CURDATE() AND art.date_debut_encheres <= CURDATE() AND e.no_utilisateur = ?");
 			} else if (state.equals("finis")) {
-				statement.append("AND art.date_fin_encheres < CURDATE() AND e.no_utilisateur = ? AND e.montant_enchere = art.prix_vente");
+				statement.append(" AND art.date_fin_encheres < CURDATE() AND e.no_utilisateur = ? AND e.montant_enchere = art.prix_vente");
 			}
 			statement.append(ORDER_BY);
 			PreparedStatement pStmt = cnx.prepareStatement(statement.toString());
+			pStmt.setInt(index, utilisateur.getNoUtilisateur());
+			index++;
 			if (!name.equals("")) {
-				pStmt.setString(index, name);
+				name = name.toUpperCase();
+				pStmt.setString(index, "%" + name + "%");
 				index++;
 			}
 
@@ -412,7 +417,7 @@ public class ArticleVenduJdbc implements ArticleVenduDAO{
 			} else if (state.equals("non débuté")) {
 				statement.append(" AND art.date_debut_encheres < CURDATE()");
 			} else if (state.equals("finis")) {
-				statement.append("AND art.date_fin_encheres < CURDATE()");
+				statement.append(" AND art.date_fin_encheres < CURDATE()");
 			}
 			statement.append(ORDER_BY);
 			System.out.println("debug test: "+statement.toString());

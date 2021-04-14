@@ -1,5 +1,7 @@
-package com.auction.eni_auction.ihm;
+package com.auction.eni_auction.servlets;
 
+import com.auction.eni_auction.bll.ArticleVenduManager;
+import com.auction.eni_auction.bll.EnchereManager;
 import com.auction.eni_auction.bo.ArticleVendu;
 import com.auction.eni_auction.bo.Enchere;
 import com.auction.eni_auction.bo.Utilisateur;
@@ -34,33 +36,21 @@ public class EnchereServlet extends HttpServlet {
         String price = request.getParameter(PRICE);
         String articleId = request.getParameter(ARTICLE_ID);
         System.out.println(price+" "+articleId);
-        ArticleVenduJdbc articleVenduJdbc = new ArticleVenduJdbc();
-        EnchereJdbc enchereJdbc = new EnchereJdbc();
         ArticleVendu article = null;
-        UtilisateurJdbc utilisateurJdbc = new UtilisateurJdbc();
         Utilisateur user = (request.getSession().getAttribute("user") != null) ? (Utilisateur) request.getSession().getAttribute("user") : null;
         Enchere enchere = null;
 
         if (user == null) {
             response.sendRedirect( request.getContextPath() + "/article?alert=error_user&id="+articleId);
         } else if (user.getCredit() >= Integer.parseInt(price)) {
-            try {
-                article = articleVenduJdbc.selectById(Integer.parseInt(articleId));
-            } catch (DALException | NumberFormatException e) {
-                e.printStackTrace();
-            }
-            assert article != null;
+            article = ArticleVenduManager.getInstance().getArticle(articleId);
             enchere = new Enchere(article, user, Integer.parseInt(price), LocalDateTime.now());
             enchere.setUtilisateur(user);
             enchere.setArticle(article);
-            try {
-                if (enchereJdbc.selectById(article.getNoArticle(), user.getNoUtilisateur()) == null)
-                    enchereJdbc.insert(enchere);
-                else
-                    enchereJdbc.update(enchere);
-            } catch (DALException | SQLException e) {
-                e.printStackTrace();
-            }
+            if (EnchereManager.getInstance().getEnchere(article.getNoArticle(), user.getNoUtilisateur()) == null)
+                EnchereManager.getInstance().addEnchere(enchere);
+            else
+                EnchereManager.getInstance().update(enchere);
             request.setAttribute("success", "Votre enchère a bien été ajoutée");
             response.sendRedirect(request.getContextPath() + "/article?alert=success&id=" + articleId);
         } else

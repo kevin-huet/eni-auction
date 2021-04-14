@@ -38,9 +38,9 @@
 
             <div class="col s12">
                 <div class="card">
-                        <form>
+                        <form method="post" action="<%=request.getContextPath()+"/"%>">
                             <div class="input-field col s8">
-                                <input  id="search" type="search" class="validate">
+                                <input  name="search" id="search" type="search" class="validate">
                                 <label class="active" for="search">Rechercher</label>
                             </div>
                             <div class="input-field col s4">
@@ -52,7 +52,7 @@
                                 </select>
                                 <label for="cat">Catégorie</label>
                             </div>
-                            <a class="btn" href="">Rechercher</a>
+                            <button class="btn" type="submit">Rechercher</button>
 
                         </form>
                 </div>
