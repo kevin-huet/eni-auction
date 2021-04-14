@@ -1,5 +1,6 @@
 package com.auction.eni_auction.servlets.auth;
 
+import com.auction.eni_auction.bll.UtilisateurManager;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;
 import com.auction.eni_auction.dal.jdbc.UtilisateurJdbc;
@@ -30,24 +31,14 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         HttpSession session = request.getSession();
-        UtilisateurJdbc utilisateurJdbc = new UtilisateurJdbc();
+        Utilisateur user = null;
         if (email != null && password != null) {
-            Utilisateur user = null;
-            try {
-                user = utilisateurJdbc.selectUtilisateurByCredentials(email, password);
-            } catch (DALException e) {
-                e.printStackTrace();
-            }
-            if (user != null) {
-                session.setAttribute("user", user);
-            } else {
-                request.setAttribute("error", "Mot de passe ou identifiant incorrect");
-                session.setAttribute("user", null);
-                doGet(request, response);
-
-            }
-        } else {
-            session.setAttribute("sessionUtilisateur", null);
+            user = UtilisateurManager.getInstance().getUserByCredentials(email, password);
+            session.setAttribute("user", user);
+        }
+        if (user == null) {
+            request.setAttribute("error", "Mot de passe ou identifiant incorrect");
+            response.sendRedirect( request.getContextPath() + "/login");
         }
         response.sendRedirect( request.getContextPath() + "/");
     }

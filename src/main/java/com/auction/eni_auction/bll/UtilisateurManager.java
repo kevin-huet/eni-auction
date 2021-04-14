@@ -23,6 +23,15 @@ public class UtilisateurManager {
         return instance;
     }
 
+    public Utilisateur getUserByCredentials(String email, String password) {
+        try {
+            return utilisateurJdbc.selectUtilisateurByCredentials(email, password);
+        } catch (DALException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public Utilisateur addUtilisateur(Utilisateur utilisateur) {
         try {
             return utilisateurJdbc.insert(utilisateur);
@@ -67,5 +76,14 @@ public class UtilisateurManager {
         } catch (DALException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean checkIfUserExist(String pseudo, String email) {
+        try {
+            return utilisateurJdbc.checkForUniquePseudoAndMail(pseudo, email);
+        } catch (DALException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

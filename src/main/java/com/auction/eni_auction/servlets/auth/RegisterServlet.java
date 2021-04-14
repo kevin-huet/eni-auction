@@ -1,5 +1,6 @@
 package com.auction.eni_auction.servlets.auth;
 
+import com.auction.eni_auction.bll.UtilisateurManager;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;
 import com.auction.eni_auction.dal.jdbc.UtilisateurJdbc;
@@ -27,7 +28,6 @@ public class RegisterServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        UtilisateurJdbc utilisateurJdbc = new UtilisateurJdbc();
         String nom = request.getParameter("nom");
         String pseudo = request.getParameter("pseudo");
         String prenom = request.getParameter("prenom");
@@ -39,15 +39,11 @@ public class RegisterServlet extends HttpServlet {
         String ville = request.getParameter("ville");
         Utilisateur user = new Utilisateur(pseudo, nom, prenom, email, telephone, rue, codepostal, ville, password, 0, false);
 
-        try {
-            if (utilisateurJdbc.checkForUniquePseudoAndMail(pseudo, email)) {
-                utilisateurJdbc.insert(user);
-                response.sendRedirect( request.getContextPath() + "/login?alert=register");
-            } else
-                response.sendRedirect( request.getContextPath() + "/register?alert=alreadyExist");
-        } catch (DALException | SQLException e) {
-            e.printStackTrace();
-        }
+        if (UtilisateurManager.getInstance().checkIfUserExist(pseudo, email)) {
+            UtilisateurManager.getInstance().addUtilisateur(user);
+            response.sendRedirect( request.getContextPath() + "/login?alert=register");
+        } else
+            response.sendRedirect( request.getContextPath() + "/register?alert=alreadyExist");
     }
 
     public void destroy() {

@@ -1,5 +1,6 @@
 package com.auction.eni_auction.servlets.auth;
 
+import com.auction.eni_auction.bll.UtilisateurManager;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;
 import com.auction.eni_auction.dal.jdbc.UtilisateurJdbc;
@@ -22,14 +23,10 @@ public class DeleteServlet extends HttpServlet {
         String id = request.getParameter("id");
         UtilisateurJdbc utilisateurJdbc = new UtilisateurJdbc();
         Utilisateur utilisateur = (session.getAttribute("user") != null) ? (Utilisateur) session.getAttribute("user") : null;
-        session.setAttribute("user", null);
 
-        assert utilisateur != null;
-        try {
-            utilisateurJdbc.delete(utilisateur.getNoUtilisateur());
-        } catch (DALException e) {
-            e.printStackTrace();
-        }
+        session.setAttribute("user", null);
+        if (utilisateur != null)
+            UtilisateurManager.getInstance().deleteUtilisateur(utilisateur);
         session.invalidate();
         response.sendRedirect(request.getContextPath()+"/");
     }
