@@ -43,6 +43,7 @@ public class RegisterServlet extends HttpServlet {
             UtilisateurManager.getInstance().addUtilisateur(pseudo, nom, prenom, email, telephone, rue, codepostal, ville, password);
             response.sendRedirect( request.getContextPath() + "/login?alert=register");
         } catch (BusinessException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
             StringBuilder error = new StringBuilder();
             int size = e.getErrorList().size();
@@ -53,8 +54,10 @@ public class RegisterServlet extends HttpServlet {
                 }
             }
             request.setAttribute("error", error.toString());
-            response.sendRedirect( request.getContextPath() + "/register?alert=alreadyExist");
+            this.getServletContext().getRequestDispatcher( "/register.jsp" ).forward( request, response );
         }
+
+
     }
 
     public void destroy() {

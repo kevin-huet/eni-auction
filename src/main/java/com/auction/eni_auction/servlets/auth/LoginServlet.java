@@ -1,9 +1,8 @@
 package com.auction.eni_auction.servlets.auth;
 
+import com.auction.eni_auction.bll.BusinessException;
 import com.auction.eni_auction.bll.UtilisateurManager;
 import com.auction.eni_auction.bo.Utilisateur;
-import com.auction.eni_auction.dal.DALException;
-import com.auction.eni_auction.dal.jdbc.UtilisateurJdbc;
 
 import java.io.*;
 import javax.servlet.ServletException;
@@ -19,9 +18,11 @@ public class LoginServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String alert = request.getParameter("alert");
-
+        String error = request.getParameter("error");
         if (alert != null) {
             request.setAttribute("sucess", "Vous êtes bien inscrit, vous pouvez à présent vous connecter");
+        } else if (error != null) {
+            request.setAttribute("error", "Identifiant incorrect");
         }
         this.getServletContext().getRequestDispatcher( "/login.jsp" ).forward( request, response );
 
@@ -32,15 +33,13 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         HttpSession session = request.getSession();
         Utilisateur user = null;
-        if (email != null && password != null) {
+        try {
             user = UtilisateurManager.getInstance().getUserByCredentials(email, password);
             session.setAttribute("user", user);
+            response.sendRedirect( request.getContextPath() + "/");
+        } catch (BusinessException e) {
+            response.sendRedirect( request.getContextPath() + "/login?error="+e.getErrorList().get(0).toString());
         }
-        if (user == null) {
-            request.setAttribute("error", "Mot de passe ou identifiant incorrect");
-            response.sendRedirect( request.getContextPath() + "/login");
-        }
-        response.sendRedirect( request.getContextPath() + "/");
     }
 
     public void destroy() {

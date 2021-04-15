@@ -28,55 +28,74 @@
     <div class="row container">
 
         <c:if test="${sessionScope.user != null}">
-        <h5 class="center">Mon Profil</h5>
+            <div class="row" id="alert_box">
+
+                <c:if test="${requestScope['error'] != null}">
+                    <div class="col s12 m12">
+                        <div class="card red darken-1">
+                            <div class="row">
+                                <div class="col s12 m10">
+                                    <div class="card-content white-text">
+                                        <c:out value="${requestScope['error']}"/>
+                                    </div>
+                                </div>
+                                <div class="col s12 m2">
+                                    <i class="fa fa-times icon_style" id="alert_close" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+            </div>
+            <h5 class="center">Mon Profil</h5>
             <div class="col s12">
                 <div class="card">
-                        <form class="col s12 center" style="margin-top: 10em" method="post" action="<%=request.getContextPath()+"/profile"%>">
-                            <p>Credits : ${sessionScope["user"].credit}</p>
+                    <form class="col s12 center" style="margin-top: 10em" method="post" action="<%=request.getContextPath()+"/profile"%>">
+                        <p>Credits : ${sessionScope["user"].credit}</p>
 
-                            <div class="input-field col s4" hidden>
-                                    <input value="${sessionScope["user"].noUtilisateur}" id="id" name="id" type="text" class="validate">
-                                    <label for="id">id</label>
-                                </div>
-                                <div class="input-field col s4">
-                                    <input value="${sessionScope["user"].pseudo}" id="pseudo" name="pseudo" type="text" class="validate">
-                                    <label for="pseudo">Pseudo</label>
-                                </div>
-                                <div class="input-field col s4">
-                                    <input value="${sessionScope["user"].nom}" id="nom" name="nom" type="text" class="validate">
-                                    <label for="nom">Last Name</label>
-                                </div>
-                                <div class="input-field col s4">
-                                    <input value="${sessionScope["user"].prenom}" id="prenom" name="prenom" type="text" class="validate">
-                                    <label for="prenom">Prenom</label>
-                                </div>
-                                <div class="input-field col s6">
-                                    <input value="${sessionScope["user"].email}" id="email" name="email" type="text" class="validate">
-                                    <label for="email">Email</label>
-                                </div>
-                                <div class="input-field col s6">
-                                    <input value="${sessionScope["user"].motDePasse}" id="password" name="password" type="password" class="validate">
-                                    <label for="password">password</label>
-                                </div>
-                                <div class="input-field col s3">
-                                    <input value="${sessionScope["user"].telephone}" id="telephone" name="telephone" type="text" class="validate">
-                                    <label for="telephone">Telephone</label>
-                                </div>
-                                <div class="input-field col s3">
-                                    <input value="${sessionScope["user"].rue}" id="rue" name="rue" type="text" class="validate">
-                                    <label for="rue">Rue</label>
-                                </div>
-                                <div class="input-field col s3">
-                                    <input value="${sessionScope["user"].codePostal}" id="codepostal" name="codepostal" type="text" class="validate">
-                                    <label for="codepostal">Code postal</label>
-                                </div>
-                                <div class="input-field col s3">
-                                    <input value="${sessionScope["user"].ville}" id="ville" name="ville" type="text" class="validate">
-                                    <label for="ville">Ville</label>
-                                </div>
+                        <div class="input-field col s4" hidden>
+                            <input value="${sessionScope['user'].noUtilisateur}" id="id" name="id" type="text" class="validate">
+                            <label for="id">id</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input value="${sessionScope['user'].pseudo}" id="pseudo" name="pseudo" type="text" class="validate">
+                            <label for="pseudo">Pseudo</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input value="${sessionScope['user'].nom}" id="nom" name="nom" type="text" class="validate">
+                            <label for="nom">Last Name</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input value="${sessionScope['user'].prenom}" id="prenom" name="prenom" type="text" class="validate">
+                            <label for="prenom">Prenom</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input value="${sessionScope['user'].email}" id="email" name="email" type="text" class="validate">
+                            <label for="email">Email</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input value="${sessionScope['user'].motDePasse}" id="password" name="password" type="password" class="validate">
+                            <label for="password">password</label>
+                        </div>
+                        <div class="input-field col s3">
+                            <input value="${sessionScope['user'].telephone}" id="telephone" name="telephone" type="text" class="validate">
+                            <label for="telephone">Telephone</label>
+                        </div>
+                        <div class="input-field col s3">
+                            <input value="${sessionScope['user'].rue}" id="rue" name="rue" type="text" class="validate">
+                            <label for="rue">Rue</label>
+                        </div>
+                        <div class="input-field col s3">
+                            <input value="${sessionScope['user'].codePostal}" id="codepostal" name="codepostal" type="text" class="validate">
+                            <label for="codepostal">Code postal</label>
+                        </div>
+                        <div class="input-field col s3">
+                            <input value="${sessionScope['user'].ville}" id="ville" name="ville" type="text" class="validate">
+                            <label for="ville">Ville</label>
+                        </div>
 
-                            <button class="btn">Valider</button>
-                        </form>
+                        <button class="btn">Valider</button>
+                    </form>
 
                 </div>
             </div>

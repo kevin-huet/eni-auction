@@ -73,8 +73,8 @@ public class UtilisateurManager {
         }
 
         String phone1 = telephone.trim().replace(" ", "");
-        String phone2 = telephone.replace(".", "");
-        String phone = telephone.replace("-", "");
+        String phone2 = phone1.replace(".", "");
+        String phone = phone2.replace("-", "");
 
         Utilisateur user = new Utilisateur(pseudo, nom, prenom, email, phone, rue, codepostal, ville, password, 0, false);
 
@@ -85,16 +85,6 @@ public class UtilisateurManager {
             be.addError("Une erreur c'est produite lors de l'enregistrement.");
             throw be;
         }
-    }
-
-    public Utilisateur editUtilisateur(Utilisateur utilisateur) {
-        try {
-            DAOFactory.getUtilisateurDAO().update(utilisateur);
-            return utilisateur;
-        } catch (DALException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public Utilisateur deleteUtilisateur(Utilisateur utilisateur) {
@@ -116,11 +106,77 @@ public class UtilisateurManager {
         return null;
     }
 
-    public void update(Utilisateur user) {
+    public void update(Utilisateur user, String nom, String prenom, String pseudo, String email,
+                       String password, String codepostal, String telephone, String rue, String ville) throws BusinessException {
+
+        BusinessException be = new BusinessException();
+
+        boolean incomplete = false;
+        if (nom == null || nom.equals("")) {
+            incomplete = true;
+        }
+        if (pseudo == null || pseudo.equals("")) {
+            incomplete = true;
+        } else if (!pseudo.matches("[A-Za-z0-9]+")) {
+            be.addError("Le pseudo ne doit contenir que des caractÃ¨res alphanumÃ©rique.");
+        }
+        if (prenom == null || prenom.equals("")) {
+            incomplete = true;
+        }
+        if (email == null || email.equals("")) {
+            incomplete = true;
+        } else if (!email.matches("^[a-zA-Z0-9.!#$%&â€™*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$")) {
+            be.addError("Le format de l'email est incorrect.");
+        }
+        if (password == null || password.equals("")) {
+            incomplete = true;
+        }
+        if (codepostal == null || codepostal.equals("")) {
+            incomplete = true;
+        }
+        if (telephone == null || nom.equals("")) {
+            incomplete = true;
+        } else if (!telephone.trim().matches("[0-9]{2}(|-|.| )[0-9]{2}(|-|.| )[0-9]{2}(|-|.| )[0-9]{2}(|-|.| )[0-9]{2}")) {
+            be.addError("Le format du tÃ©lÃ©phone est incorrect.");
+        }
+        if (rue == null || rue.equals("")) {
+            incomplete = true;
+        }
+        if (ville == null || ville.equals("")) {
+            incomplete = true;
+        }
+        if (incomplete) {
+            be.addError("Tout les champs sont obligatoires.");
+        }
+
+        if (this.checkIfUserExist(pseudo, email)) {
+            be.addError("Email ou Pseudo dÃ©jÃ  existant.");
+        }
+
+        if (be.hasErrors()) {
+            throw be;
+        }
+
+        String phone1 = telephone.trim().replace(" ", "");
+        String phone2 = phone1.replace(".", "");
+        String phone = phone2.replace("-", "");
+
+        user.setNom(nom);
+        user.setPrenom(prenom);
+        user.setPseudo(pseudo);
+        user.setEmail(email);
+        user.setMotDePasse(password);
+        user.setCodePostal(codepostal);
+        user.setTelephone(telephone);
+        user.setRue(rue);
+        user.setVille(ville);
+
         try {
             DAOFactory.getUtilisateurDAO().update(user);
         } catch (DALException e) {
             e.printStackTrace();
+            be.addError("Une erreur c'est produite lors de l'enregistrement.");
+            throw be;
         }
     }
 
@@ -133,12 +189,25 @@ public class UtilisateurManager {
         return false;
     }
 
-    public Utilisateur getUserByCredentials(String email, String password) {
-        try {
-            return DAOFactory.getUtilisateurDAO().selectUtilisateurByCredentials(email, password);
-        } catch (DALException e) {
-            e.printStackTrace();
+    public Utilisateur getUserByCredentials(String email, String password) throws BusinessException {
+        BusinessException be = new BusinessException();
+        if ((email != null && !email.equals("")) && (password != null && !password.equals(""))) {
+            try {
+                Utilisateur user = DAOFactory.getUtilisateurDAO().selectUtilisateurByCredentials(email, password);
+                if (user == null) {
+                    be.addError("Mot de passe ou identifiant incorrect");
+                    throw be;
+                } else {
+                    return user;
+                }
+            } catch (DALException e) {
+                e.printStackTrace();
+                be.addError("Une erreur c'est produite.");
+                throw be;
+            }
+        } else {
+            be.addError("Veuillez entrer un identifiant et un mot de passe");
+            throw be;
         }
-        return null;
     }
 }

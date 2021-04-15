@@ -1,5 +1,6 @@
 package com.auction.eni_auction.servlets;
 
+import com.auction.eni_auction.bll.BusinessException;
 import com.auction.eni_auction.bll.UtilisateurManager;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;
@@ -44,23 +45,27 @@ public class ProfileServlet extends HttpServlet {
 
         if (session.getAttribute("user") != null)
             user = (Utilisateur) session.getAttribute("user");
-        if (user != null) {
-            updateUserValue(user, nom, prenom, pseudo, email, password, codepostal, telephone, rue, ville);
+        if (user != null && (user.getNoUtilisateur() == Integer.parseInt(id) || user.isAdministrateur()) ) {
+            try {
+                UtilisateurManager.getInstance().update(user, nom, prenom, pseudo, email, password, codepostal, telephone, rue, ville);
+                response.sendRedirect(request.getContextPath()+"/profile?alert=success&id="+id);
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                StringBuilder error = new StringBuilder();
+                int size = e.getErrorList().size();
+                for (int i = 0; i < size ; i++) {
+                    error.append(e.getErrorList().get(i));
+                    if (i > 0 && size > 1 && i != size-1) {
+                        error.append(" ");
+                    }
+                }
+                request.setAttribute("error", error.toString());
+                this.getServletContext().getRequestDispatcher( "/profile.jsp" ).forward( request, response );
+            }
+        } else {
+            response.sendRedirect(request.getContextPath()+"/profile?id="+id);
         }
-        response.sendRedirect(request.getContextPath()+"/profile?alert=success&id="+id);
-    }
 
-    private void updateUserValue(Utilisateur user, String nom, String prenom, String pseudo, String email,
-                                 String password, String codepostal, String telephone, String rue, String ville) {
-        user.setNom(nom);
-        user.setPrenom(prenom);
-        user.setPseudo(pseudo);
-        user.setEmail(email);
-        user.setMotDePasse(password);
-        user.setCodePostal(codepostal);
-        user.setTelephone(telephone);
-        user.setRue(rue);
-        user.setVille(ville);
-        UtilisateurManager.getInstance().update(user);
     }
 }
