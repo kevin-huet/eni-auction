@@ -62,7 +62,6 @@ public class HomeServlet extends HttpServlet {
         String status;
         HttpSession session = request.getSession();
 
-        System.out.println("buy : "+buy+" --- sell : "+sell);
         if (session.getAttribute("user") != null && buy != null && !buy.equals("null")) {
             status = getStatusBuy(openAuction, actualAuction, winAuction);
             response.sendRedirect(request.getContextPath()+"/?cat="+cat+"&search="+search+"&buy="+buy+"&status="+status);

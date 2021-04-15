@@ -1,5 +1,6 @@
 package com.auction.eni_auction.servlets.auth;
 
+import com.auction.eni_auction.bll.BusinessException;
 import com.auction.eni_auction.bll.UtilisateurManager;
 import com.auction.eni_auction.bo.Utilisateur;
 import com.auction.eni_auction.dal.DALException;
@@ -21,7 +22,7 @@ public class RegisterServlet extends HttpServlet {
         String alert = request.getParameter("alert");
 
         if (alert != null && !alert.equals("")) {
-            request.setAttribute("error", "Email ou Pseudo déjà existant");
+            request.setAttribute("error", alert);
         }
         this.getServletContext().getRequestDispatcher( "/register.jsp" ).forward( request, response );
 
@@ -37,13 +38,25 @@ public class RegisterServlet extends HttpServlet {
         String telephone = request.getParameter("telephone");
         String rue = request.getParameter("rue");
         String ville = request.getParameter("ville");
-        Utilisateur user = new Utilisateur(pseudo, nom, prenom, email, telephone, rue, codepostal, ville, password, 0, false);
 
-        if (!UtilisateurManager.getInstance().checkIfUserExist(pseudo, email)) {
-            UtilisateurManager.getInstance().addUtilisateur(user);
-            response.sendRedirect( request.getContextPath() + "/login?alert=register");
-        } else
-            response.sendRedirect( request.getContextPath() + "/register?alert=alreadyExist");
+        try {
+            UtilisateurManager.getInstance().addUtilisateur(pseudo, nom, prenom, email, telephone, rue, codepostal, ville, password);
+            this.getServletContext().getRequestDispatcher( "/login.jsp" ).forward( request, response );
+        } catch (BusinessException e) {
+            e.printStackTrace();
+            StringBuilder error = new StringBuilder();
+            int size = e.getErrorList().size();
+            for (int i = 0; i < size ; i++) {
+                error.append(e.getErrorList().get(i));
+                if (i > 0 && size > 1 && i != size-1) {
+                    error.append("<br>");
+                }
+            }
+            request.setAttribute("error", error.toString());
+            this.getServletContext().getRequestDispatcher( "/register.jsp" ).forward( request, response );
+        }
+
+
     }
 
     public void destroy() {

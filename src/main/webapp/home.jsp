@@ -119,7 +119,9 @@
                         <span class="card-title">${articlesVendus.getNom()}</span>
                     </div>
                     <div class="card-content">
-                        <p>${articlesVendus.getNoArticle()} - ${articlesVendus.getDescription()}</p>
+                        <p><b>Motant de l'enchère actuelle : </b>${articlesVendus.getSellPrice()}</p>
+                        <p><b>Description : </b></p>
+                        <p>${articlesVendus.getDescription()}</p>
                     </div>
                     <div class="card-action">
                         <a href="<%=request.getContextPath()+"/article?id="%>${articlesVendus.getNoArticle()}">Voir plus de détails</a>
