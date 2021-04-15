@@ -41,7 +41,7 @@ public class RegisterServlet extends HttpServlet {
 
         try {
             UtilisateurManager.getInstance().addUtilisateur(pseudo, nom, prenom, email, telephone, rue, codepostal, ville, password);
-            this.getServletContext().getRequestDispatcher( "/login.jsp" ).forward( request, response );
+            response.sendRedirect( request.getContextPath() + "/login?alert=register");
         } catch (BusinessException e) {
             e.printStackTrace();
             StringBuilder error = new StringBuilder();
@@ -53,10 +53,8 @@ public class RegisterServlet extends HttpServlet {
                 }
             }
             request.setAttribute("error", error.toString());
-            this.getServletContext().getRequestDispatcher( "/register.jsp" ).forward( request, response );
+            response.sendRedirect( request.getContextPath() + "/register?alert=alreadyExist");
         }
-
-
     }
 
     public void destroy() {
