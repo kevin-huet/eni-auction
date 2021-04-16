@@ -150,10 +150,10 @@ public class UtilisateurManager {
         }
 
         try {
-				if (DAOFactory.getUtilisateurDAO().checkForUniqueMail(email) || email.equals(user.getEmail())) {
+				if (!DAOFactory.getUtilisateurDAO().checkForUniqueMail(email) && !email.equals(user.getEmail())) {
 					be.addError("Email déjà utilisé.");
 				}
-				if (DAOFactory.getUtilisateurDAO().checkForUniquePseudo(pseudo) || pseudo.equals(user.getPseudo())) {
+				if (!DAOFactory.getUtilisateurDAO().checkForUniquePseudo(pseudo) && !pseudo.equals(user.getPseudo())) {
 					be.addError("Pseudo déjà utilisé.");
 				}
 			} catch (DALException e1) {
