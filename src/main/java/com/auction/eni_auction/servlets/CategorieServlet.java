@@ -25,7 +25,7 @@ public class CategorieServlet extends HttpServlet {
 
         if (session.getAttribute("user") != null) {
             user = (Utilisateur) session.getAttribute("user");
-            if (user != null && user.isAdministrateur()) {
+            if (user != null) {
                 categories = CategorieManager.getInstance().getAllCategories();
                 request.setAttribute("categories", categories);
                 this.getServletContext().getRequestDispatcher("/category.jsp").forward(request, response);

@@ -19,7 +19,7 @@ public class JdbcTools {
 
         urldb = "jdbc:mysql://localhost/auction";
         userdb = "root";
-        passworddb = "";
+        passworddb = "oktamer22";
     }
 
     public static Connection getConnection() throws SQLException{

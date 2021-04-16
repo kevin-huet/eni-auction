@@ -2,9 +2,6 @@ package com.auction.eni_auction.servlets;
 
 import com.auction.eni_auction.bll.ArticleVenduManager;
 import com.auction.eni_auction.bo.ArticleVendu;
-import com.auction.eni_auction.dal.DALException;
-import com.auction.eni_auction.dal.jdbc.ArticleVenduJdbc;
-
 import java.io.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -25,6 +22,8 @@ public class ArticleServlet extends HttpServlet {
             request.setAttribute("error", "Vous devez être connecté pour effectuer une enchère");
         } else if (alert != null && alert.equals("success")) {
             request.setAttribute("success", "Votre enchère à bien été prise en compte");
+        } else if (alert != null) {
+            request.setAttribute("error", alert);
         }
         request.setAttribute("derniereEnchere", article.getEnchere());
         request.setAttribute("article", article);

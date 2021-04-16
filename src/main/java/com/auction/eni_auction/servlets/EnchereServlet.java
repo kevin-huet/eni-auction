@@ -1,6 +1,7 @@
 package com.auction.eni_auction.servlets;
 
 import com.auction.eni_auction.bll.ArticleVenduManager;
+import com.auction.eni_auction.bll.BusinessException;
 import com.auction.eni_auction.bll.EnchereManager;
 import com.auction.eni_auction.bo.ArticleVendu;
 import com.auction.eni_auction.bo.Enchere;
@@ -42,19 +43,23 @@ public class EnchereServlet extends HttpServlet {
 
         if (user == null) {
             response.sendRedirect( request.getContextPath() + "/article?alert=error_user&id="+articleId);
-        } else if (user.getCredit() >= Integer.parseInt(price)) {
-            article = ArticleVenduManager.getInstance().getArticle(articleId);
-            enchere = new Enchere(article, user, Integer.parseInt(price), LocalDateTime.now());
-            enchere.setUtilisateur(user);
-            enchere.setArticle(article);
-            if (EnchereManager.getInstance().getEnchere(article.getNoArticle(), user.getNoUtilisateur()) == null)
-                EnchereManager.getInstance().addEnchere(enchere);
-            else
-                EnchereManager.getInstance().update(enchere);
-            request.setAttribute("success", "Votre enchère a bien été ajoutée");
-            response.sendRedirect(request.getContextPath() + "/article?alert=success&id=" + articleId);
-        } else
-            response.sendRedirect( request.getContextPath() + "/article?alert=error_credit&id="+articleId);
+        } else {
+            try {
+                article = ArticleVenduManager.getInstance().getArticle(articleId);
+                enchere = EnchereManager.getInstance().getEnchere(article.getNoArticle(), user.getNoUtilisateur());
+                if (enchere == null)
+                    EnchereManager.getInstance().addEnchere(article, user, price);
+                else
+                    EnchereManager.getInstance().update(enchere, price);
+                request.setAttribute("success", "Votre enchÃ¨re a bien Ã©tÃ© ajoutÃ©e");
+                response.sendRedirect(request.getContextPath() + "/article?alert=success&id=" + articleId);
+            } catch (BusinessException e) {
+                e.printStackTrace();
+                response.sendRedirect( request.getContextPath() + "/article?alert="+e.getErrorList().get(0)+"&id="+articleId);
+            }
+
+        }
+
     }
     public void destroy() {
 
