@@ -22,7 +22,7 @@ public class LoginServlet extends HttpServlet {
         if (alert != null) {
             request.setAttribute("sucess", "Vous êtes bien inscrit, vous pouvez à présent vous connecter");
         } else if (error != null) {
-            request.setAttribute("error", "Identifiant incorrect");
+            request.setAttribute("error", error);
         }
         this.getServletContext().getRequestDispatcher( "/login.jsp" ).forward( request, response );
 
