@@ -209,12 +209,72 @@ public class UtilisateurJdbc implements UtilisateurDAO {
 
     @Override
     public boolean checkForUniquePseudo(String pseudo) throws DALException {
-        return false;
+        Utilisateur utilisateur = null;
+		try (Connection cnx = ConnectionProvider.getConnection()) {
+			PreparedStatement pStmt = cnx.prepareStatement(SELECT_ALL + " WHERE pseudo = ?");
+			pStmt.setString(1, pseudo);
+			ResultSet rs = pStmt.executeQuery();
+
+			while (rs.next()) {
+				utilisateur = new Utilisateur(
+						rs.getInt("no_utilisateur"),
+						rs.getString("pseudo"),
+						rs.getString("nom"),
+						rs.getString("prenom"),
+						rs.getString("email"),
+						rs.getString("telephone"),
+						rs.getString("rue"),
+						rs.getString("code_postal"),
+						rs.getString("ville"),
+						rs.getString("mot_de_passe"),
+						rs.getInt("credit"),
+						rs.getBoolean("administrateur")
+				);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			DALException exception = new DALException();
+			exception.addError(e.getErrorCode());
+			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return utilisateur != null;
     }
 
     @Override
     public boolean checkForUniqueMail(String mail) throws DALException {
-        return false;
+        Utilisateur utilisateur = null;
+		try (Connection cnx = ConnectionProvider.getConnection()) {
+			PreparedStatement pStmt = cnx.prepareStatement(SELECT_ALL + " WHERE email = ?");
+			pStmt.setString(1, mail);
+			ResultSet rs = pStmt.executeQuery();
+
+			while (rs.next()) {
+				utilisateur = new Utilisateur(
+						rs.getInt("no_utilisateur"),
+						rs.getString("pseudo"),
+						rs.getString("nom"),
+						rs.getString("prenom"),
+						rs.getString("email"),
+						rs.getString("telephone"),
+						rs.getString("rue"),
+						rs.getString("code_postal"),
+						rs.getString("ville"),
+						rs.getString("mot_de_passe"),
+						rs.getInt("credit"),
+						rs.getBoolean("administrateur")
+				);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			DALException exception = new DALException();
+			exception.addError(e.getErrorCode());
+			throw exception;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return utilisateur != null;
     }
 
     @Override
