@@ -149,9 +149,18 @@ public class UtilisateurManager {
             be.addError("Tout les champs sont obligatoires.");
         }
 
-        if (this.checkIfUserExist(pseudo, email)) {
-            be.addError("Email ou Pseudo dÃ©jÃ  existant.");
-        }
+        try {
+				if (DAOFactory.getUtilisateurDAO().checkForUniqueMail(email) && !email.equals(user.getEmail())) {
+					be.addError("Email déjà utilisé.");
+				}
+				if (DAOFactory.getUtilisateurDAO().checkForUniquePseudo(pseudo) && !pseudo.equals(user.getPseudo())) {
+					be.addError("Pseudo déjà utilisé.");
+				}
+			} catch (DALException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				be.addError("Une erreur c'est produite lors de la vérification des données.");
+			}
 
         if (be.hasErrors()) {
             throw be;
